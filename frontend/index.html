@@ -124,7 +124,11 @@ body.fs .winbar{visibility:hidden}
   .app{--ctrlH:clamp(64px,10vh,96px);--sideH:clamp(44px,8vh,76px);--topH:auto;
     grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) var(--ctrlH) var(--sideH);grid-template-areas:"top" "machine" "ctrl" "side"}
   header.top{flex-wrap:wrap}
-  .board-wrap{width:min(calc(100vw - var(--gap)*3), calc((100vh - var(--ctrlH) - var(--sideH) - var(--wbH) - var(--crH) - 110px) * 1.25))}
+  .app{--crH:clamp(28px,6.5vh,56px);--wbH:clamp(30px,7vh,52px)}
+  .board{aspect-ratio:5/5.6}
+  .board-wrap{width:min(calc(100vw - var(--gap)*3), calc((100vh - var(--ctrlH) - var(--sideH) - var(--wbH) - var(--crH) - 110px) * 5 / 5.6))}
+  .winbar{flex-direction:column;gap:0}
+  .winbar .msg{white-space:normal;text-align:center;line-height:1.2}
   .controls{flex-direction:row;justify-content:space-between;align-items:center}
   .opts{width:clamp(80px,26vw,130px)}
   .spin{width:clamp(48px,9vh,80px);height:clamp(48px,9vh,80px)}
@@ -136,14 +140,17 @@ body.fs .winbar{visibility:hidden}
 }
 /* replay : pas de commandes ni d'achats */
 body.replay .controls,body.replay .side,body.replay .pill{display:none!important}
-body.replay .app{grid-template-columns:minmax(0,1fr);grid-template-areas:"top" "machine";grid-template-rows:var(--topH) minmax(0,1fr)}
+body.replay .app{--rpH:clamp(22px,7vh,40px);grid-template-columns:minmax(0,1fr);grid-template-areas:"top" "machine";grid-template-rows:var(--topH) minmax(0,1fr)}
+body.replay .winbar{height:var(--rpH)}
+body.replay .board{aspect-ratio:5/4}
 .machine:has(.rp-end) .winbar{visibility:hidden}
-body.replay .board-wrap{width:min(calc((100vh - var(--topH) - var(--wbH) - var(--crH) - var(--gap)*4 - 46px) * 1.25), calc(100vw - var(--gap)*4))}
+body.replay .board-wrap{width:min(calc((100vh - var(--topH) - var(--rpH) - var(--crH) - var(--gap)*5 - 12px) * 1.25), calc(100vw - var(--gap)*4))}
 .rp-banner{position:absolute;left:50%;top:0;transform:translateX(-50%);z-index:12;white-space:nowrap;font-weight:800;font-size:clamp(9px,1.9vh,14px);letter-spacing:.04em;background:rgba(8,6,24,.92);border:1px solid var(--line);border-radius:999px;padding:3px 12px}
 .rp-play{position:absolute;inset:0;z-index:40;display:grid;place-items:center;background:rgba(6,3,18,.55)}
 .rp-play button{font-family:var(--display);font-size:clamp(18px,5vmin,36px);border:0;border-radius:999px;padding:.45em 1.4em;background:linear-gradient(180deg,#7dffb3,#14b866);color:#06331b;box-shadow:0 6px 0 #064d28}
-.rp-end{position:absolute;left:50%;bottom:0;transform:translateX(-50%);z-index:40;display:flex;gap:10px;align-items:center;background:rgba(8,6,24,.94);border:1px solid var(--gold);border-radius:999px;padding:6px 8px 6px 16px;font-weight:800;font-size:clamp(10px,2.2vh,16px);white-space:nowrap}
-.rp-end button{border:0;border-radius:999px;padding:6px 14px;font-weight:800;background:var(--gold);color:#2a1600}
+.rp-end{position:absolute;left:50%;bottom:0;transform:translateX(-50%);z-index:40;height:var(--rpH);max-width:100%;display:flex;gap:clamp(4px,1vw,10px);align-items:center;background:rgba(8,6,24,.94);border:1px solid var(--gold);border-radius:999px;padding:0 3px 0 clamp(8px,1.6vw,16px);font-weight:800;font-size:clamp(9px,2.2vh,16px);white-space:nowrap}
+.rp-end span{overflow:hidden;text-overflow:ellipsis}
+.rp-end button{flex:0 0 auto;height:calc(var(--rpH) - 6px);border:0;border-radius:999px;padding:0 clamp(8px,1.4vw,14px);font-weight:800;font-size:inherit;background:var(--gold);color:#2a1600}
 
 /* fenêtres */
 .ov{position:fixed;inset:0;z-index:60;display:grid;place-items:center;background:rgba(3,8,20,.72);padding:8px}
@@ -203,7 +210,7 @@ canvas.fx{position:fixed;inset:0;pointer-events:none;z-index:75}
 
   <aside class="side">
     <button class="buy" id="buyStd"><span class="k" id="tBuy">Bonus</span><span class="d" id="tBuyD"></span><span class="p" id="pBuy"></span><span class="crewmini" id="miniStd"></span></button>
-    <button class="buy sup" id="buySup"><span class="k" id="tSup">Super bonus</span><span class="d" id="tSupD"></span><span class="p" id="pSup"></span><span class="crewmini" id="miniSup"></span></button>
+    <button class="buy sup" id="buySup"><span class="k" id="tSup">Superbonus</span><span class="d" id="tSupD"></span><span class="p" id="pSup"></span><span class="crewmini" id="miniSup"></span></button>
   </aside>
 
   <main class="machine">

@@ -13,10 +13,10 @@
             "weights": "lookUpTable_bonus_0.csv"
         },
         {
-            "name": "super",
+            "name": "superbonus",
             "cost": 200.0,
-            "events": "books_super.jsonl.zst",
-            "weights": "lookUpTable_super_0.csv"
+            "events": "books_superbonus.jsonl.zst",
+            "weights": "lookUpTable_superbonus_0.csv"
         }
     ]
 }

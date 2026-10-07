@@ -9,13 +9,14 @@ Le dépôt contient tout ce que demande Stake : le front-end, les fichiers math�
 - **Gains en façons** : des symboles identiques sur 3, 4 ou 5 rouleaux voisins, en partant de la gauche, à n'importe quelle position. Chaque combinaison d'une position par rouleau est une façon (jusqu'à 1024).
 - **Wild** (drapeau pirate) sur les rouleaux 2 à 5 en jeu de base.
 - **Free spins** : 3, 4 ou 5 symboles Bonus donnent 8, 10 ou 12 free spins. 3 Bonus pendant le bonus ajoutent 3 spins, et les wilds déjà posés restent.
+- **Gain minimum d'un bonus** : 10 fois la mise. Si le bonus se termine en dessous, la différence est ajoutée.
 - **Gain maximum** : 10 000 fois la mise, dans chaque mode.
 
 ### Le bonus de l'équipage (wilds collants)
 
 À chaque free spin, un personnage peut monter à bord (environ un spin sur 3,3). Il pose un wild sur une position libre des rouleaux 2 à 5. **Ce wild ne repart plus** : il reste jusqu'à la fin du bonus et garde le multiplicateur de son personnage. Les wilds de personnages différents s'accumulent donc sur les rouleaux au fil des spins.
 
-| Personnage | Multiplicateur de son wild | Part des abordages (Bonus) | Super bonus |
+| Personnage | Multiplicateur de son wild | Part des abordages (Bonus) | Superbonus |
 |---|---|---|---|
 | Matelot | x2 | 39 % | non |
 | Perroquet | x3 | 26 % | non |
@@ -32,7 +33,7 @@ Si une façon passe par plusieurs wilds de l'équipage, leurs multiplicateurs s'
 |---|---|---|---|
 | Jeu normal | `base` | 1 × la mise | bonus naturel environ 1 spin sur 250 |
 | Achat du bonus | `bonus` | 100 × la mise | 8 free spins ou plus, tout l'équipage |
-| Super bonus | `super` | 200 × la mise | 8 free spins ou plus, équipage d'élite seulement (chaque wild vaut de x5 à x100) |
+| Superbonus | `superbonus` | 200 × la mise | 8 free spins ou plus, équipage d'élite seulement (chaque wild vaut de x5 à x100) |
 
 ## Contenu du dépôt
 
@@ -66,9 +67,9 @@ Les trois modes passent les contrôles officiels du Math SDK de Stake Engine (`u
 
 | Mode | Retour au joueur | Gain max | etl40b | etl10k |
 |---|---|---|---|---|
-| base | 96,20 % | 10 000 × | 0,38 | 0,002 |
-| bonus | 96,20 % | 10 000 × | 0,74 | 0,15 |
-| super | 96,20 % | 10 000 × | 0,15 | 0,15 |
+| base | 96,20 % | 10 000 × | 0,30 | 0,002 |
+| bonus | 96,20 % | 10 000 × | 0,65 | 0,15 |
+| superbonus | 96,20 % | 10 000 × | 0,74 | 0,15 |
 
 - Paiements entiers en centièmes de mise, multiples de 10 (donc par paliers de 0,1 × la mise) ; poids entiers ; livres identiques aux tables.
 - Écart de retour entre les modes : nul.
@@ -93,6 +94,7 @@ Le jeu a été vérifié point par point avec les pages « Approval guidelines �
 - **RGS** : tous les niveaux de mise du serveur, mise de la partie en cours restaurée à la reprise, pas de `/play` si le solde manque, `/end-round` seulement pour une partie gagnante, `rgs_url` jamais en dur (erreur affichée si invalide), petits montants avec la bonne précision, toutes les devises de la table Stake (symbole, décimales, position).
 - **Rejeu** (`?replay=true`) : chargement automatique, bouton Play, aucune action de mise ni appel de session, mode / mise / coût réel affichés, gain et multiplicateur à la fin, bouton Play again, message si la partie ne se charge pas, fonctionne en Popout S et en mode social.
 - **Mode social** (`social=true` ou `socialCasino`) : anglais uniquement, aucun terme interdit (« Play amount », « Get bonus », « Total play »…), devises SC et GC sans « $ ».
+- **Noms des modes** : `base`, `bonus` et `superbonus`, affichés « Base », « Bonus » et « Superbonus » dans le jeu, les règles et la fenêtre de rejeu.
 - **Langues** : anglais et français ; toute autre langue retombe sur l'anglais.
 
 ## Tester en local

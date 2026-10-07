@@ -15,7 +15,8 @@
     scatters          { count, cells }
     freeSpinTrigger   { count, scatters, crew:[ids possibles], sticky:[[case, id]] }   sticky : wilds posés d'office (Super bonus)
     freeSpin { number, left } · freeSpinRetrigger { added, left }
-    freeSpinEnd       { total, played, maxed } · winCap { amount } · finalWin { amount }
+    freeSpinEnd       { total, played, maxed, topUp }   topUp : complément pour atteindre le gain minimum de 10 × la mise
+    winCap { amount } · finalWin { amount }
   Tous les montants sont en centièmes de mise (100 = 1 × la mise). Chaque gain de spin est arrondi
   à la dizaine inférieure : les paiements sont donc des multiples de 0,1 × la mise, comme l'exige Stake Engine.
   Utilisé par le générateur des fichiers mathématiques (Node) et par le front-end en démo.
@@ -65,11 +66,12 @@
     HOT_BOOST: 30,
     FS_AWARD: { 3: 8, 4: 10, 5: 12 },
     RETRIGGER: 3,
+    MIN_BONUS: 1000,             // un bonus rapporte au moins 10 × la mise (centièmes)
     MAX_WIN: 1000000,            // 10 000 × la mise (centièmes)
     MODES: {
       base:  { cost: 1,   label: 'Spin' },
       bonus: { cost: 100, label: 'Bonus', buy: true },
-      super: { cost: 200, label: 'Super bonus', buy: true, crewFrom: 2 }   // équipage d'élite seulement : Cuistot (x5) et plus forts
+      superbonus: { cost: 200, label: 'Superbonus', buy: true, crewFrom: 2 }   // équipage d'élite seulement : Cuistot (x5) et plus forts
     }
   };
 
@@ -198,7 +200,9 @@
         if (r.maxed) { maxed = true; break; }
         if (r.sc >= 3) { left += C.RETRIGGER; ev.push({ type: 'freeSpinRetrigger', added: C.RETRIGGER, left }); }
       }
-      ev.push({ type: 'freeSpinEnd', total, played, maxed });
+      let topUp = 0;                                   // gain minimum du bonus : complété si besoin
+      if (!maxed && total + before < C.MIN_BONUS) { topUp = Math.min(C.MIN_BONUS - before, capLeft) - total; total += topUp; }
+      ev.push({ type: 'freeSpinEnd', total, played, maxed, topUp });
       return { total, maxed };
     }
 

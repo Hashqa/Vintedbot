@@ -11,10 +11,10 @@ const ENG = JollyEngine.create();
 const CFG = JollyEngine.CONFIG;
 const { symSVG, crewSVG, CREW_COLORS } = JollyArt;
 const REELS = CFG.REELS, ROWS = CFG.ROWS;
-const MAX_WIN_X = CFG.MAX_WIN / 100;
+const MAX_WIN_X = CFG.MAX_WIN / 100, MIN_BONUS_X = CFG.MIN_BONUS / 100;
 const RTP_TEXT = '96.20%';
-const BUY_STD = CFG.MODES.bonus.cost, BUY_SUP = CFG.MODES.super.cost;
-const SUP_FROM = CFG.MODES.super.crewFrom;
+const BUY_STD = CFG.MODES.bonus.cost, BUY_SUP = CFG.MODES.superbonus.cost;
+const SUP_FROM = CFG.MODES.superbonus.crewFrom;
 
 /* ============ LANGUE ============ */
 const Q = new URLSearchParams(location.search);
@@ -30,7 +30,7 @@ const JUR = {};                                 // options imposées par la juri
 function makeT(soc) {
   const P = soc ? 'play amount' : 'bet';
   const en = {
-    balance: 'Balance', bet: soc ? 'Play amount' : 'Bet', buy: 'Bonus', sup: 'Super bonus',
+    balance: 'Balance', bet: soc ? 'Play amount' : 'Bet', buy: 'Bonus', sup: 'Superbonus',
     buyD: CFG.FS_AWARD[3] + '+ free spins. Crew wilds stay until the end.', supD: 'Elite crew only: every wild is x5 to x100.',
     fsLeft: 'Free spins', fsWin: 'Bonus win', hint: 'Match symbols on adjacent reels from the left. 1024 ways.', luck: 'Good luck…',
     nowin: 'No win this time.', win: 'Win', bonusDone: 'Bonus complete!',
@@ -39,27 +39,27 @@ function makeT(soc) {
     boards: n => 'The ' + n + ' comes aboard!', stays: 'This wild stays until the end of the bonus',
     trig: 'Bonus triggered', spins: n => n + ' FREE SPINS',
     intro: 'On each free spin, a member of the crew may come aboard and drop a wild on reels 2 to 5. <b>Crew wilds stay in place until the end of the bonus</b>, each with its character\'s multiplier.',
-    introSup: 'Super bonus: only the elite crew comes aboard (x5 to x100).', start: 'Start',
-    retrig: n => '+' + n + ' FREE SPINS', over: 'Bonus complete', maxed: 'Max win reached', inSpins: n => 'in ' + n + ' free spin' + (n > 1 ? 's' : ''), cont: 'Continue',
-    confirm: (b, sup) => (soc ? 'For a play amount of ' : 'For a bet of ') + b + ', the <b>' + (sup ? 'Super bonus' : 'Bonus') + '</b> starts right away with <b>' + CFG.FS_AWARD[3] + ' or more free spins</b>' + (sup ? ' and the <b>elite crew</b> only (x5 to x100)' : '') + '.',
+    introSup: 'Superbonus: only the elite crew comes aboard (x5 to x100).', start: 'Start',
+    retrig: n => '+' + n + ' FREE SPINS', minApplied: 'Minimum bonus win of ' + MIN_BONUS_X + '× applied.', over: 'Bonus complete', maxed: 'Max win reached', inSpins: n => 'in ' + n + ' free spin' + (n > 1 ? 's' : ''), cont: 'Continue',
+    confirm: (b, sup) => (soc ? 'For a play amount of ' : 'For a bet of ') + b + ', the <b>' + (sup ? 'Superbonus' : 'Bonus') + '</b> starts right away with <b>' + CFG.FS_AWARD[3] + ' or more free spins</b>' + (sup ? ' and the <b>elite crew</b> only (x5 to x100)' : '') + '.',
     cancel: 'Cancel', buyBtn: soc ? 'Get bonus' : 'Buy', skip: 'Tap to skip', tapCont: 'Tap to continue', tiers: ['BIG WIN', 'MEGA WIN', 'EPIC WIN', 'LEGENDARY'],
     wayLine: (s, n, f, a) => s + ' ×' + n + ' · ' + f + ' way' + (f > 1 ? 's' : '') + ' · ' + a, more: n => '+' + n + ' more',
     replayDone: 'Replay complete', replayAgain: 'Play again', replayPlay: 'Play', replayWin: (x, m) => 'Win: ' + x + ' (' + m + '×)',
     replayBanner: (m, b, c) => m + ': ' + b + (c ? ' · ' + (soc ? 'Total play: ' : 'Real cost: ') + c : ''), replayErr: 'This round could not be loaded.',
-    modeName: { base: 'Base game', bonus: 'Bonus', super: 'Super bonus' },
+    modeName: { base: 'Base', bonus: 'Bonus', superbonus: 'Superbonus' },
     session: 'Session', net: 'Net', loading: 'Loading…', noSession: 'This game must be opened from the casino.',
     music: 'Music', musicOn: 'Turn music on', musicOff: 'Turn music off', soundOn: 'Turn sound on', soundOff: 'Turn sound off', rulesTip: 'Game rules',
     spinAria: 'Spin', stopAuto: n => 'Stop autoplay (' + n + ')', autoAsk: n => 'Start autoplay for ' + n + ' spins?', autoStart: 'Start autoplay',
-    dec: soc ? 'Lower play amount' : 'Lower bet', inc: soc ? 'Raise play amount' : 'Raise bet', autoTip: 'Autoplay', turboTip: 'Turbo: faster animations', buyTip: soc ? 'Get the bonus' : 'Buy the bonus', supTip: soc ? 'Get the super bonus' : 'Buy the super bonus',
+    dec: soc ? 'Lower play amount' : 'Lower bet', inc: soc ? 'Raise play amount' : 'Raise bet', autoTip: 'Autoplay', turboTip: 'Turbo: faster animations', buyTip: soc ? 'Get the bonus' : 'Buy the bonus', supTip: soc ? 'Get the superbonus' : 'Buy the superbonus',
     err: { ERR_IPB: 'Insufficient balance.', ERR_IS: 'Your session has expired. Please reload the game.', ERR_ATE: 'Authentication failed. Please reload the game.', ERR_GLE: soc ? 'Play limit reached.' : 'Limit reached.', ERR_LOC: 'This game is not available in your location.', ERR_MAINTENANCE: 'The game is under maintenance. Please try again later.', ERR_VAL: 'Invalid request. Please reload the game.', def: 'Connection problem. Please try again.' },
     controls: [['Spin button', 'Starts a spin. During autoplay it shows the spins left; tap it to stop.'], ['− / +', 'Lowers or raises the ' + P + '.'], ['Auto', 'Choose a number of automatic spins, then confirm to start.'], ['Turbo', 'Speeds up the animations.'],
-      ['Bonus', (soc ? 'Gets the bonus' : 'Buys the bonus') + ' for ' + BUY_STD + '× the ' + P + ', after confirmation.'], ['Super bonus', (soc ? 'Gets the super bonus' : 'Buys the super bonus') + ' for ' + BUY_SUP + '× the ' + P + ', after confirmation. Only the elite crew comes aboard.'],
+      ['Bonus', (soc ? 'Gets the bonus' : 'Buys the bonus') + ' for ' + BUY_STD + '× the ' + P + ', after confirmation.'], ['Superbonus', (soc ? 'Gets the superbonus' : 'Buys the superbonus') + ' for ' + BUY_SUP + '× the ' + P + ', after confirmation. Only the elite crew comes aboard.'],
       ['♪', 'Turns the music on or off.'], ['Speaker', 'Turns all sound on or off.'], ['?', 'Opens these rules.'], ['Space', 'Starts a spin (when allowed).']],
     rules: f => `<h2>Rules</h2>
       <p>5 reels, 4 rows, <b>1024 ways</b>. A win is formed by matching symbols on <b>3, 4 or 5 adjacent reels, starting from the leftmost reel</b>, in any position. Each combination of one matching position per reel is one way, and every way wins the value below. Values are per way, for your current ${P} of <b>${f.bet}</b>. Wins of different symbols add up.</p>
       ${f.table}
       <h3>Wild</h3><p>${f.wild} The Wild appears on reels 2 to 5 in the base game and substitutes for every symbol except Bonus.</p>
-      <h3>Free spins</h3><p>${f.scatter} 3 Bonus symbols anywhere award ${CFG.FS_AWARD[3]} free spins, 4 award ${CFG.FS_AWARD[4]} and 5 award ${CFG.FS_AWARD[5]}. During the bonus, 3 or more Bonus symbols award ${CFG.RETRIGGER} extra free spins, and the wilds already on the reels stay.</p>
+      <h3>Free spins</h3><p>${f.scatter} 3 Bonus symbols anywhere award ${CFG.FS_AWARD[3]} free spins, 4 award ${CFG.FS_AWARD[4]} and 5 award ${CFG.FS_AWARD[5]}. During the bonus, 3 or more Bonus symbols award ${CFG.RETRIGGER} extra free spins, and the wilds already on the reels stay. A bonus always wins at least <b>${MIN_BONUS_X}× the ${P}</b>: if the bonus ends below that, the difference is added.</p>
       <h3>The crew and sticky wilds</h3><p>On each free spin, a member of the crew may come aboard (about one spin in ${Math.round(1 / CFG.BOARD_CHANCE * 10) / 10}). They drop one wild on a random free position of reels 2 to 5. <b>This wild stays in place until the end of the bonus</b> and keeps the multiplier of the character who dropped it, so wilds from different characters build up on the reels.</p>
       <p>Crew wilds substitute for every symbol except Bonus. If a way goes through several crew wilds, their multipliers are added together (x5 + x10 = x15). A way without a crew wild counts ×1. All obtainable multipliers:</p>
       ${f.crew}
@@ -68,12 +68,12 @@ function makeT(soc) {
       <p>Wins are capped at <b>${MAX_WIN_X.toLocaleString('en-US')}× the ${P}</b> in every mode. When the max win is reached, the round ends and the max win is awarded.</p>
       <h3>Controls</h3><div class="ctrl-list">${f.controls}</div>
       <h3>Disclaimer</h3><p class="fine">Malfunction voids all wins and plays. A consistent internet connection is required. In the event of a disconnection, reload the game to finish any uncompleted rounds. The expected return is calculated over many plays. The game display is not representative of any physical device and is for illustrative purposes only. Winnings are settled according to the amount received from the Remote Game Server and not from events within the web browser. Jolly Wilds™ © ${new Date().getFullYear()} KPOS.</p>`,
-    rulesBuy: (a, b) => `<h3>Bonus and Super bonus</h3><p><b>Bonus</b>, ${a} (${BUY_STD}× the ${P}): the free spins start right away with the whole crew. <b>Super bonus</b>, ${b} (${BUY_SUP}× the ${P}): the free spins start right away, and only the elite crew (Cook, Gunner, Captain and Kraken) comes aboard, so every crew wild is at least x5. Both ask for confirmation first.</p>`,
-    crewHead: ['Character', 'Wild multiplier', 'Comes aboard in'], both: 'Bonus and Super bonus', bonusOnly: 'Bonus only',
+    rulesBuy: (a, b) => `<h3>Bonus and Superbonus</h3><p><b>Bonus</b>, ${a} (${BUY_STD}× the ${P}): the free spins start right away with the whole crew. <b>Superbonus</b>, ${b} (${BUY_SUP}× the ${P}): the free spins start right away, and only the elite crew (Cook, Gunner, Captain and Kraken) comes aboard, so every crew wild is at least x5. Both ask for confirmation first.</p>`,
+    crewHead: ['Character', 'Wild multiplier', 'Comes aboard in'], both: 'Bonus and Superbonus', bonusOnly: 'Bonus only',
     modeHead: ['Mode', 'Cost', 'RTP', 'Max win'], close: 'Close'
   };
   const fr = {
-    balance: 'Solde', bet: 'Mise', buy: 'Bonus', sup: 'Super bonus',
+    balance: 'Solde', bet: 'Mise', buy: 'Bonus', sup: 'Superbonus',
     buyD: CFG.FS_AWARD[3] + ' free spins ou plus. Les wilds de l’équipage restent jusqu’au bout.', supD: 'Équipage d’élite seulement : chaque wild vaut de x5 à x100.',
     fsLeft: 'Free spins', fsWin: 'Gain du bonus', hint: 'Alignez des symboles sur des rouleaux voisins depuis la gauche. 1024 façons.', luck: 'Bonne chance…',
     nowin: 'Pas de gain cette fois.', win: 'Gain', bonusDone: 'Bonus terminé !',
@@ -82,27 +82,27 @@ function makeT(soc) {
     boards: n => 'Le ' + n + ' monte à bord !', stays: 'Ce wild reste jusqu’à la fin du bonus',
     trig: 'Bonus déclenché', spins: n => n + ' FREE SPINS',
     intro: 'À chaque free spin, un membre de l’équipage peut monter à bord et poser un wild sur les rouleaux 2 à 5. <b>Les wilds de l’équipage restent en place jusqu’à la fin du bonus</b>, chacun avec le multiplicateur de son personnage.',
-    introSup: 'Super bonus : seul l’équipage d’élite monte à bord (x5 à x100).', start: 'Commencer',
-    retrig: n => '+' + n + ' FREE SPINS', over: 'Bonus terminé', maxed: 'Gain maximum atteint', inSpins: n => 'en ' + n + ' free spin' + (n > 1 ? 's' : ''), cont: 'Continuer',
-    confirm: (b, sup) => 'Pour une mise de ' + b + ', le <b>' + (sup ? 'Super bonus' : 'Bonus') + '</b> démarre tout de suite avec <b>' + CFG.FS_AWARD[3] + ' free spins ou plus</b>' + (sup ? ' et seulement <b>l’équipage d’élite</b> (x5 à x100)' : '') + '.',
+    introSup: 'Superbonus : seul l’équipage d’élite monte à bord (x5 à x100).', start: 'Commencer',
+    retrig: n => '+' + n + ' FREE SPINS', minApplied: 'Gain minimum du bonus de ' + MIN_BONUS_X + ' fois la mise appliqué.', over: 'Bonus terminé', maxed: 'Gain maximum atteint', inSpins: n => 'en ' + n + ' free spin' + (n > 1 ? 's' : ''), cont: 'Continuer',
+    confirm: (b, sup) => 'Pour une mise de ' + b + ', le <b>' + (sup ? 'Superbonus' : 'Bonus') + '</b> démarre tout de suite avec <b>' + CFG.FS_AWARD[3] + ' free spins ou plus</b>' + (sup ? ' et seulement <b>l’équipage d’élite</b> (x5 à x100)' : '') + '.',
     cancel: 'Annuler', buyBtn: 'Acheter', skip: 'Touchez pour passer', tapCont: 'Touchez pour continuer', tiers: ['BIG WIN', 'MEGA WIN', 'EPIC WIN', 'LÉGENDAIRE'],
     wayLine: (s, n, f, a) => s + ' ×' + n + ' · ' + f + ' façon' + (f > 1 ? 's' : '') + ' · ' + a, more: n => '+' + n + ' autre' + (n > 1 ? 's' : ''),
     replayDone: 'Rejeu terminé', replayAgain: 'Revoir', replayPlay: 'Lancer', replayWin: (x, m) => 'Gain : ' + x + ' (' + m.replace('.', ',') + '×)',
     replayBanner: (m, b, c) => m + ' : ' + b + (c ? ' · coût réel : ' + c : ''), replayErr: 'Impossible de charger cette partie.',
-    modeName: { base: 'Jeu de base', bonus: 'Bonus', super: 'Super bonus' },
+    modeName: { base: 'Base', bonus: 'Bonus', superbonus: 'Superbonus' },
     session: 'Session', net: 'Net', loading: 'Chargement…', noSession: 'Ce jeu doit être ouvert depuis le casino.',
     music: 'Musique', musicOn: 'Activer la musique', musicOff: 'Couper la musique', soundOn: 'Activer le son', soundOff: 'Couper le son', rulesTip: 'Règles du jeu',
     spinAria: 'Lancer', stopAuto: n => 'Arrêter l’auto (' + n + ')', autoAsk: n => 'Lancer ' + n + ' spins automatiques ?', autoStart: 'Lancer l’auto',
-    dec: 'Baisser la mise', inc: 'Augmenter la mise', autoTip: 'Spins automatiques', turboTip: 'Turbo : animations plus rapides', buyTip: 'Acheter le bonus', supTip: 'Acheter le super bonus',
+    dec: 'Baisser la mise', inc: 'Augmenter la mise', autoTip: 'Spins automatiques', turboTip: 'Turbo : animations plus rapides', buyTip: 'Acheter le bonus', supTip: 'Acheter le superbonus',
     err: { ERR_IPB: 'Solde insuffisant.', ERR_IS: 'Votre session a expiré. Rechargez le jeu.', ERR_ATE: 'Échec de l’authentification. Rechargez le jeu.', ERR_GLE: 'Limite atteinte.', ERR_LOC: 'Ce jeu n’est pas disponible dans votre pays.', ERR_MAINTENANCE: 'Le jeu est en maintenance. Réessayez plus tard.', ERR_VAL: 'Requête invalide. Rechargez le jeu.', def: 'Problème de connexion. Réessayez.' },
     controls: [['Bouton de lancement', 'Lance un spin. En automatique, il affiche les spins restants ; touchez-le pour arrêter.'], ['− / +', 'Baisse ou augmente la mise.'], ['Auto', 'Choisissez un nombre de spins automatiques, puis confirmez pour lancer.'], ['Turbo', 'Accélère les animations.'],
-      ['Bonus', 'Achète le bonus pour ' + BUY_STD + ' fois la mise, après confirmation.'], ['Super bonus', 'Achète le super bonus pour ' + BUY_SUP + ' fois la mise, après confirmation. Seul l’équipage d’élite monte à bord.'],
+      ['Bonus', 'Achète le bonus pour ' + BUY_STD + ' fois la mise, après confirmation.'], ['Superbonus', 'Achète le superbonus pour ' + BUY_SUP + ' fois la mise, après confirmation. Seul l’équipage d’élite monte à bord.'],
       ['♪', 'Active ou coupe la musique.'], ['Haut-parleur', 'Active ou coupe tous les sons.'], ['?', 'Ouvre ces règles.'], ['Espace', 'Lance un spin (si autorisé).']],
     rules: f => `<h2>Règles</h2>
       <p>5 rouleaux, 4 rangées, <b>1024 façons de gagner</b>. Un gain se forme avec des symboles identiques sur <b>3, 4 ou 5 rouleaux voisins, en partant du rouleau de gauche</b>, à n'importe quelle position. Chaque combinaison d'une position par rouleau est une façon, et chaque façon rapporte la valeur du tableau. Les valeurs sont données par façon, pour votre mise actuelle de <b>${f.bet}</b>. Les gains de symboles différents s'additionnent.</p>
       ${f.table}
       <h3>Wild</h3><p>${f.wild} Le Wild apparaît sur les rouleaux 2 à 5 en jeu de base et remplace tous les symboles sauf le Bonus.</p>
-      <h3>Free spins</h3><p>${f.scatter} 3 symboles Bonus n'importe où donnent ${CFG.FS_AWARD[3]} free spins, 4 en donnent ${CFG.FS_AWARD[4]} et 5 en donnent ${CFG.FS_AWARD[5]}. Pendant le bonus, 3 symboles Bonus ou plus ajoutent ${CFG.RETRIGGER} free spins, et les wilds déjà posés restent.</p>
+      <h3>Free spins</h3><p>${f.scatter} 3 symboles Bonus n'importe où donnent ${CFG.FS_AWARD[3]} free spins, 4 en donnent ${CFG.FS_AWARD[4]} et 5 en donnent ${CFG.FS_AWARD[5]}. Pendant le bonus, 3 symboles Bonus ou plus ajoutent ${CFG.RETRIGGER} free spins, et les wilds déjà posés restent. Un bonus rapporte toujours au moins <b>${MIN_BONUS_X} fois la mise</b> : s'il se termine en dessous, la différence est ajoutée.</p>
       <h3>L'équipage et les wilds collants</h3><p>À chaque free spin, un membre de l'équipage peut monter à bord (environ un spin sur ${String(Math.round(1 / CFG.BOARD_CHANCE * 10) / 10).replace('.', ',')}). Il pose un wild sur une position libre des rouleaux 2 à 5, choisie au hasard. <b>Ce wild reste en place jusqu'à la fin du bonus</b> et garde le multiplicateur du personnage qui l'a posé : les wilds de différents personnages s'accumulent sur les rouleaux.</p>
       <p>Les wilds de l'équipage remplacent tous les symboles sauf le Bonus. Si une façon passe par plusieurs wilds de l'équipage, leurs multiplicateurs s'additionnent (x5 + x10 = x15). Une façon sans wild de l'équipage compte ×1. Tous les multiplicateurs possibles :</p>
       ${f.crew}
@@ -111,8 +111,8 @@ function makeT(soc) {
       <p>Les gains sont plafonnés à <b>${MAX_WIN_X.toLocaleString('fr-FR')} fois la mise</b> dans chaque mode. Dès que le gain maximum est atteint, la partie s'arrête et il est accordé.</p>
       <h3>Commandes</h3><div class="ctrl-list">${f.controls}</div>
       <h3>Avertissement</h3><p class="fine">Tout dysfonctionnement annule les parties et les gains. Une connexion internet stable est nécessaire. En cas de coupure, rechargez le jeu pour terminer les parties en cours. Le taux de retour est calculé sur un grand nombre de parties. L'affichage du jeu ne représente aucun appareil physique et n'est qu'illustratif. Les gains sont réglés selon le montant reçu du serveur de jeu (Remote Game Server), et non selon les événements affichés dans le navigateur. Jolly Wilds™ © ${new Date().getFullYear()} KPOS.</p>`,
-    rulesBuy: (a, b) => `<h3>Bonus et Super bonus</h3><p><b>Bonus</b>, ${a} (${BUY_STD} fois la mise) : les free spins démarrent tout de suite, avec tout l'équipage. <b>Super bonus</b>, ${b} (${BUY_SUP} fois la mise) : les free spins démarrent tout de suite et seul l'équipage d'élite (Cuistot, Canonnier, Capitaine et Kraken) monte à bord, donc chaque wild vaut au moins x5. Les deux demandent une confirmation.</p>`,
-    crewHead: ['Personnage', 'Multiplicateur du wild', 'Monte à bord en'], both: 'Bonus et Super bonus', bonusOnly: 'Bonus seulement',
+    rulesBuy: (a, b) => `<h3>Bonus et Superbonus</h3><p><b>Bonus</b>, ${a} (${BUY_STD} fois la mise) : les free spins démarrent tout de suite, avec tout l'équipage. <b>Superbonus</b>, ${b} (${BUY_SUP} fois la mise) : les free spins démarrent tout de suite et seul l'équipage d'élite (Cuistot, Canonnier, Capitaine et Kraken) monte à bord, donc chaque wild vaut au moins x5. Les deux demandent une confirmation.</p>`,
+    crewHead: ['Personnage', 'Multiplicateur du wild', 'Monte à bord en'], both: 'Bonus et Superbonus', bonusOnly: 'Bonus seulement',
     modeHead: ['Mode', 'Coût', 'Taux de retour', 'Gain max'], close: 'Fermer'
   };
   return LANG === 'fr' && !soc ? fr : en;       // mode social : anglais uniquement
@@ -377,7 +377,7 @@ async function playBook(events, b, mode) {
         clearStickies(); for (const [c, id] of (e.sticky || [])) setSticky(c, id, true);
         $('fsInfo').hidden = false; $('fsLeft').textContent = e.count; $('fsWin').textContent = fmt(0);
         const roster = CFG.CREW.map(p => `<div class="${e.crew.includes(p.id) ? '' : 'off'}">${crewSVG(p.id)}<span><b>x${p.mult}</b>${T.crew[p.id]}</span></div>`).join('');
-        await modal(`<div class="kicker">${mode === 'base' ? T.trig : T.modeName[mode]}</div><h2>${T.spins(e.count)}</h2><p>${T.intro}</p>${mode === 'super' ? '<p><b>' + T.introSup + '</b></p>' : ''}<div class="crewgrid">${roster}</div>`, [[T.start, 1]]);
+        await modal(`<div class="kicker">${mode === 'base' ? T.trig : T.modeName[mode]}</div><h2>${T.spins(e.count)}</h2><p>${T.intro}</p>${mode === 'superbonus' ? '<p><b>' + T.introSup + '</b></p>' : ''}<div class="crewgrid">${roster}</div>`, [[T.start, 1]]);
         break;
       }
       case 'freeSpin': $('fsLeft').textContent = e.left; clearMarks(); break;
@@ -385,7 +385,8 @@ async function playBook(events, b, mode) {
       case 'freeSpinEnd': {
         await sleep(400);
         const amt = (before + e.total) / 100 * b;          // gain du spin déclencheur compris
-        await modal(`<div class="kicker">${e.maxed ? T.maxed : T.over}</div><h2>${fmt(amt)}</h2><p>${T.inSpins(e.played)}</p>`, [[T.cont, 1]]);
+        lastTotal = before + e.total; showAmt(amt); $('fsWin').textContent = fmt(amt);
+        await modal(`<div class="kicker">${e.maxed ? T.maxed : T.over}</div><h2>${fmt(amt)}</h2><p>${T.inSpins(e.played)}</p>${e.topUp > 0 ? `<p class="fine">${T.minApplied}</p>` : ''}`, [[T.cont, 1]]);
         inFS = false; crewNow = -1; fsCrew = null; document.body.classList.remove('fs'); $('fsInfo').hidden = true; setCrewBar(null, -1); updateUI();
         break;
       }
@@ -499,7 +500,7 @@ async function spin() {
 }
 async function buy(sup) {
   if (!ready || busy || inFS || REPLAY || JUR.disabledBuyFeature) return;
-  const b = bet(), mode = sup ? 'super' : 'bonus', price = b * CFG.MODES[mode].cost;
+  const b = bet(), mode = sup ? 'superbonus' : 'bonus', price = b * CFG.MODES[mode].cost;
   if (balance < price) { showError({ code: 'ERR_IPB' }); return; }
   const ok = await modal(`<div class="kicker">${sup ? T.sup : T.buy}</div><h2>${fmt(price)}</h2><p>${T.confirm(fmt(b), sup)}</p>`, [[T.cancel, false, 'ghost'], [T.buyBtn, true]]);
   if (!ok) return;
@@ -515,7 +516,7 @@ function showRules() {
   const crew = `<div class="tablewrap"><table class="pay"><tr><th>${T.crewHead[0]}</th><th>${T.crewHead[1]}</th><th>${T.crewHead[2]}</th></tr>` +
     CFG.CREW.map(p => `<tr><td>${crewSVG(p.id)} ${T.crew[p.id]}</td><td>x${p.mult}</td><td>${p.id >= SUP_FROM ? T.both : T.bonusOnly}</td></tr>`).join('') + '</table></div>';
   const modes = `<div class="tablewrap"><table class="pay"><tr>${T.modeHead.map(h => `<th>${h}</th>`).join('')}</tr>` +
-    ['base', 'bonus', 'super'].filter(m => m === 'base' || !JUR.disabledBuyFeature).map(m => `<tr><td>${T.modeName[m]}</td><td>${fmt(CFG.MODES[m].cost * b)} (${CFG.MODES[m].cost}×)</td><td>${RTP_TEXT_L}</td><td>${fmt(MAX_WIN_X * b)} (${MAX_WIN_X.toLocaleString(LOCALE)}×)</td></tr>`).join('') + '</table></div>';
+    ['base', 'bonus', 'superbonus'].filter(m => m === 'base' || !JUR.disabledBuyFeature).map(m => `<tr><td>${T.modeName[m]}</td><td>${fmt(CFG.MODES[m].cost * b)} (${CFG.MODES[m].cost}×)</td><td>${RTP_TEXT_L}</td><td>${fmt(MAX_WIN_X * b)} (${MAX_WIN_X.toLocaleString(LOCALE)}×)</td></tr>`).join('') + '</table></div>';
   const controls = T.controls.filter(([k]) => !(JUR.disabledBuyFeature && /onus/.test(k)) && !(JUR.disabledAutoplay && k === 'Auto') && !(JUR.disabledTurbo && k === 'Turbo') && !(JUR.disabledSpacebar && /Space|Espace/.test(k)))
     .map(([k, v]) => `<b>${k}</b><span>${v}</span>`).join('');
   const icon = c => symSVG(c).replace('<svg', '<svg style="width:30px;height:30px;vertical-align:middle"');

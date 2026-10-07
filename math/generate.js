@@ -13,8 +13,8 @@ const Engine = require('../frontend/engine.js');
 const OUT = path.join(__dirname, 'publish');
 const TARGET_RTP = 0.962;                 // limite Stake : 0,967 ; écart max entre modes : 0,05
 const CAP_COUNT = 40;                     // livres "gain max" fournis par mode
-const CAP_PROB = { base: 1 / 5e6, bonus: 1 / 40000, super: 1 / 12000 };   // probabilité d'atteindre le gain max
-const COUNTS = { base: +(process.argv[2] || 1e5), bonus: +(process.argv[3] || 2e4), super: +(process.argv[4] || 2e4) };
+const CAP_PROB = { base: 1 / 5e6, bonus: 1 / 40000, superbonus: 1 / 12000 };   // probabilité d'atteindre le gain max
+const COUNTS = { base: +(process.argv[2] || 1e5), bonus: +(process.argv[3] || 2e4), superbonus: +(process.argv[4] || 2e4) };
 
 // aléatoire cryptographique, lu par blocs pour la vitesse
 let pool = Buffer.alloc(0), pos = 0;
@@ -98,7 +98,7 @@ function verify(file, lutFile) {
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });
   const index = { modes: [] }, report = {};
-  for (const mode of ['base', 'bonus', 'super']) {
+  for (const mode of ['base', 'bonus', 'superbonus']) {
     const cost = Engine.CONFIG.MODES[mode].cost, N = COUNTS[mode], t0 = Date.now();
     const rounds = [];
     for (let i = 0; i < N; i++) { const r = eng.playRound(mode); if (r.criteria !== 'wincap') rounds.push(r); else i--; }

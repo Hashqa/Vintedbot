@@ -28,7 +28,7 @@ for (let i = 0; i < N; i++) {
   const r = eng.playRound('base'); paid += r.payoutX; if (r.payoutX > 0) hit++; if (r.freeGameWins > 0 || r.events.some(e => e.type === 'freeSpinTrigger')) { trig++; fsPaid += r.freeGameWins; } if (r.payoutX > maxX) maxX = r.payoutX;
 }
 console.log(`base : RTP ${(paid / N * 100).toFixed(2)} %  (bonus ${(fsPaid / N * 100).toFixed(2)} %)  bonus 1 sur ${(N / trig).toFixed(0)}  touche ${(hit / N * 100).toFixed(1)} %  max ${maxX}×`);
-for (const mode of ['bonus', 'super']) {
+for (const mode of ['bonus', 'superbonus']) {
   const cost = C.MODES[mode].cost; let s = 0, mx = 0, under = 0; const crew = Array(6).fill(0);
   for (let i = 0; i < B; i++) {
     const r = eng.playRound(mode); s += r.payoutX; if (r.payoutX > mx) mx = r.payoutX; if (r.payoutX < cost) under++;
