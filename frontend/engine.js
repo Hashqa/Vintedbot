@@ -3,11 +3,11 @@
   Grille 5 rouleaux × 4 rangées, 1024 façons de gagner (de gauche à droite, rouleaux voisins).
   Bonus : à chaque free spin, un personnage de l'équipage peut monter à bord. Il pose un wild sur les
   rouleaux 2 à 5, et ce wild RESTE EN PLACE jusqu'à la fin du bonus, avec le multiplicateur de ce
-  personnage (x2 pour le Matelot … x100 pour le Kraken). Les wilds s'accumulent spin après spin.
+  personnage (x2 Matelot, x3 Perroquet, x4 Canonnier, x5 Capitaine). Les wilds s'accumulent spin après spin.
 
   Une partie complète est produite sous forme de liste d'événements (format « livre » Stake Engine).
   Plateau : 5 chaînes (une par rouleau, de haut en bas). Symboles : '0'..'8' normaux, 'W' wild simple,
-  'S' Bonus, 'a'..'f' wild collant du personnage 0..5. Case = rouleau * 4 + rangée.
+  'S' Bonus, 'a'..'d' wild collant du personnage 0..3. Case = rouleau * 4 + rangée.
     reveal            { board, gameType }                                les wilds collants déjà posés y figurent
     crew              { id, mult, cells:[cases] }                       personnage du spin et ses nouveaux wilds
     winInfo           { wins:[{ s, n, ways, f, b, w, c:[cases] }], spinWin, totalWin }
@@ -28,7 +28,7 @@
   'use strict';
 
   const REELS = 5, ROWS = 4, WILD = 'W', SCATTER = 'S';
-  const CREW_CODES = 'abcdef';                       // wild collant du personnage 0..5
+  const CREW_CODES = 'abcd';                         // wild collant du personnage 0..3
   const isCrew = c => CREW_CODES.indexOf(c) >= 0;
 
   // Gains par façon, en centièmes de mise, pour 3, 4 et 5 rouleaux.
@@ -45,14 +45,12 @@
     [3, 8, 20]
   ];
 
-  // L'équipage : multiplicateur de ses wilds et fréquence de passage.
+  // L'équipage : multiplicateur de son wild collant et fréquence de passage (plus le multiplicateur est fort, plus il est rare).
   const CREW = [
-    { id: 0, key: 'deckhand', mult: 2,   weight: 380 },
-    { id: 1, key: 'parrot',   mult: 3,   weight: 260 },
-    { id: 2, key: 'cook',     mult: 5,   weight: 180 },
-    { id: 3, key: 'gunner',   mult: 10,  weight: 110 },
-    { id: 4, key: 'captain',  mult: 25,  weight: 45 },
-    { id: 5, key: 'kraken',   mult: 100, weight: 10 }
+    { id: 0, key: 'deckhand', mult: 2, weight: 50 },
+    { id: 1, key: 'parrot',   mult: 3, weight: 28 },
+    { id: 2, key: 'gunner',   mult: 4, weight: 15 },
+    { id: 3, key: 'captain',  mult: 5, weight: 7 }
   ];
 
   const CONFIG = {
@@ -61,7 +59,7 @@
     WILD_WEIGHT: 7.5,            // wild simple, rouleaux 2 à 5, jeu de base uniquement
     SCATTER_WEIGHT: [2.05, 2.05, 2.05, 2.05, 2.05],
     FS_SCATTER_WEIGHT: 0.9,
-    BOARD_CHANCE: 0.3,           // chance qu'un personnage monte à bord à chaque free spin
+    BOARD_CHANCE: 0.42,           // chance qu'un personnage monte à bord à chaque free spin
     HOT_CHANCE: 0.05,            // free spin « à l'abordage » : un symbole envahit les rouleaux
     HOT_BOOST: 30,
     FS_AWARD: { 3: 8, 4: 10, 5: 12 },
@@ -71,7 +69,7 @@
     MODES: {
       base:  { cost: 1,   label: 'Spin' },
       bonus: { cost: 100, label: 'Bonus', buy: true },
-      superbonus: { cost: 200, label: 'Superbonus', buy: true, crewFrom: 2 }   // équipage d'élite seulement : Cuistot (x5) et plus forts
+      superbonus: { cost: 150, label: 'Superbonus', buy: true, crewFrom: 2 }   // équipage d'élite seulement : Canonnier (x4) et Capitaine (x5)
     }
   };
 

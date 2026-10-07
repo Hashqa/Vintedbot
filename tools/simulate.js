@@ -9,7 +9,7 @@ const C = Engine.CONFIG;
 
 // contrôle par force brute : chaque façon = un choix de case par rouleau
 (function check() {
-  const syms = ['0', '1', '4', 'W', 'a', 'c', 'f', 'S'], M = { a: 2, c: 5, f: 100 };
+  const syms = ['0', '1', '4', 'W', 'a', 'b', 'd', 'S'], M = { a: 2, b: 3, d: 5 };
   for (let t = 0; t < 3000; t++) {
     const b = Array.from({ length: 5 }, (_, r) => Array.from({ length: 4 }, () => { const s = syms[(Math.random() * syms.length) | 0]; return r === 0 && (s === 'W' || M[s]) ? '0' : s; }));
     for (const w of eng.evaluate(b)) {

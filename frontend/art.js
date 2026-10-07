@@ -1,7 +1,7 @@
 /*
   Jolly Wilds — dessins vectoriels (SVG intégrés, aucune image externe).
   symSVG(code)  : symbole du plateau ('0'..'8', 'W', 'S')
-  crewSVG(id)   : portrait d'un personnage de l'équipage (0 Matelot … 5 Kraken)
+  crewSVG(id)   : portrait d'un personnage de l'équipage (0 Matelot x2, 1 Perroquet x3, 2 Canonnier x4, 3 Capitaine x5)
 */
 (function (root) {
   'use strict';
@@ -74,7 +74,7 @@
   }
 
   // ---------- l'équipage
-  const CREW_COLORS = ['#3a86ff', '#2ecc71', '#ffd60a', '#ff7a1a', '#ff3b5c', '#b15cff'];
+  const CREW_COLORS = ['#3a86ff', '#2ecc71', '#ff7a1a', '#ff3b5c'];
   const skin = '#f2c194', skinD = '#c98a5b';
   function face(extra) { return `<ellipse cx="50" cy="56" rx="22" ry="25" fill="${skin}" stroke="${skinD}" stroke-width="2"/>${extra}`; }
   const eyes = (y = 52) => `<circle cx="41" cy="${y}" r="3.2" fill="#1d1d2b"/><circle cx="59" cy="${y}" r="3.2" fill="#1d1d2b"/><circle cx="42" cy="${y - 1}" r="1" fill="#fff"/><circle cx="60" cy="${y - 1}" r="1" fill="#fff"/>`;
@@ -94,12 +94,6 @@
       <circle cx="58" cy="44" r="7" fill="#fff" stroke="#0e5a2c" stroke-width="1.5"/><circle cx="59" cy="44" r="3.5" fill="#1d1d2b"/>
       <path d="M34 66 q10 10 22 6 q-6 14 -22 12z" fill="#3a86ff" stroke="#0d2f73" stroke-width="2"/>`;
   }
-  function cook() {    // le Cuistot : toque et moustache
-    return face(`${eyes(54)}<path d="M36 66 q7 -6 14 -1 q7 -5 14 1 q-7 5 -14 1 q-7 4 -14 -1z" fill="#5a3418"/>
-      <path d="M44 72 q6 4 12 0" stroke="#7a2b12" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-      <rect x="30" y="34" width="40" height="10" rx="3" fill="#fff" stroke="#b9b9c8" stroke-width="2"/>
-      <path d="M31 36 q-10 -14 4 -22 q6 -10 15 -4 q9 -6 15 4 q14 8 4 22z" fill="#fff" stroke="#b9b9c8" stroke-width="2"/>`);
-  }
   function gunner() {  // le Canonnier : barbe, bandeau sur l'œil
     return face(`<circle cx="59" cy="52" r="3.2" fill="#1d1d2b"/><path d="M33 46 L68 56" stroke="#16161f" stroke-width="2.5"/><ellipse cx="41" cy="52" rx="6" ry="5" fill="#16161f"/>
       <path d="M28 58 q4 26 22 26 q18 0 22 -26 q-6 8 -22 8 q-16 0 -22 -8z" fill="#3b2a1a" stroke="#1f150c" stroke-width="2"/>
@@ -113,16 +107,7 @@
       <path d="M10 40 q40 -14 80 0 q-6 -26 -40 -30 q-34 4 -40 30z" fill="#16161f" stroke="#ffc83d" stroke-width="3"/>
       <circle cx="50" cy="26" r="6" fill="#f4f1e6"/><circle cx="48" cy="25" r="1.5" fill="#16161f"/><circle cx="52" cy="25" r="1.5" fill="#16161f"/><path d="M43 33 l14 4 M57 33 l-14 4" stroke="#f4f1e6" stroke-width="2"/>`);
   }
-  function kraken() {  // le Kraken
-    return `<path d="M20 90 q-8 -20 6 -24 q10 -2 6 14" stroke="#7b2cbf" stroke-width="9" fill="none" stroke-linecap="round"/>
-      <path d="M80 90 q8 -20 -6 -24 q-10 -2 -6 14" stroke="#7b2cbf" stroke-width="9" fill="none" stroke-linecap="round"/>
-      <path d="M38 92 q-4 -14 4 -18 M62 92 q4 -14 -4 -18" stroke="#7b2cbf" stroke-width="8" fill="none" stroke-linecap="round"/>
-      <path d="M22 60 q-4 -46 28 -48 q32 2 28 48 q-12 14 -28 14 q-16 0 -28 -14z" fill="#9d4edd" stroke="#4a137a" stroke-width="2.5"/>
-      <circle cx="36" cy="28" r="3" fill="#c77dff"/><circle cx="62" cy="22" r="4" fill="#c77dff"/><circle cx="68" cy="38" r="2.5" fill="#c77dff"/>
-      <ellipse cx="50" cy="50" rx="15" ry="12" fill="#ffe14d" stroke="#4a137a" stroke-width="2.5"/><rect x="47" y="40" width="6" height="20" rx="3" fill="#16161f"/>
-      <circle cx="26" cy="70" r="2.5" fill="#e0aaff"/><circle cx="74" cy="70" r="2.5" fill="#e0aaff"/>`;
-  }
-  const CREW_ART = [deckhand, parrot, cook, gunner, captain, kraken];
+  const CREW_ART = [deckhand, parrot, gunner, captain];
   function crewSVG(id, opts = {}) {
     const col = CREW_COLORS[id], g = gid('cr');
     return svg(`<defs><radialGradient id="${g}" cx=".5" cy=".4" r=".7"><stop offset="0" stop-color="${col}" stop-opacity=".95"/><stop offset="1" stop-color="#0a1230"/></radialGradient><clipPath id="${g}c"><circle cx="50" cy="50" r="45"/></clipPath></defs>

@@ -104,8 +104,8 @@ function verify(file, lutFile) {
     for (let i = 0; i < N; i++) { const r = eng.playRound(mode); if (r.criteria !== 'wincap') rounds.push(r); else i--; }
     // livres "gain max" : même jeu, avec des spins chauds forcés (méthode des distributions du Math SDK)
     let caps = 0;
-    // (spins « à l'abordage » et Kraken forcés : des issues rares mais possibles du jeu normal)
-    while (caps < CAP_COUNT) { const r = eng.playRound(mode, Object.assign({ forceHot: true, forceCrew: 5 }, mode === 'base' ? { forceTrigger: 3 } : {})); if (r.criteria === 'wincap') { rounds.push(r); caps++; } }
+    // (spins « à l'abordage » et Capitaine forcés : des issues rares mais possibles du jeu normal)
+    while (caps < CAP_COUNT) { const r = eng.playRound(mode, Object.assign({ forceHot: true, forceCrew: 3 }, mode === 'base' ? { forceTrigger: 3 } : {})); if (r.criteria === 'wincap') { rounds.push(r); caps++; } }
     // mélange pour que l'ordre des identifiants ne trahisse rien
     for (let i = rounds.length - 1; i > 0; i--) { const j = crypto.randomInt(0, i + 1); [rounds[i], rounds[j]] = [rounds[j], rounds[i]]; }
     const { a, factors, weights } = computeWeights(rounds, cost, CAP_PROB[mode]);

@@ -14,7 +14,7 @@
         },
         {
             "name": "superbonus",
-            "cost": 200.0,
+            "cost": 150.0,
             "events": "books_superbonus.jsonl.zst",
             "weights": "lookUpTable_superbonus_0.csv"
         }

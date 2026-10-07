@@ -46,15 +46,12 @@ if (layer !== 'fg') {
     { left: '-5%', width: '110%', top: horizon + H * (.06 + i * .1) + 'px', height: 4 * u + 'px' });
 }
 if (layer !== 'bg') {
-  // l'équipage, sans multiplicateurs : le Capitaine au centre, le Kraken derrière
-  const big = tall ? 46 : 34;
-  const cx = W / 2, cy = tall ? H * .7 : H * .66;
-  add(JollyArt.crewSVG(5), { left: cx - big * .55 * u + 'px', top: cy - big * 1.05 * u + 'px', width: big * 1.1 * u + 'px', height: big * 1.1 * u + 'px' }, 'abs crew');
-  const side = tall
-    ? [[0, -38, -8, 26], [1, 38, -10, 26], [2, -30, 16, 24], [3, 30, 15, 24]]
-    : [[0, -30, -12, 22], [1, 30, -12, 22], [2, -18, 14, 20], [3, 18, 14, 20]];
-  for (const [id, dx, dy, s] of side) add(JollyArt.crewSVG(id), { left: cx + dx * u - s * u / 2 + 'px', top: cy + dy * u - s * u / 2 + 'px', width: s * u + 'px', height: s * u + 'px' }, 'abs crew');
-  add(JollyArt.crewSVG(4), { left: cx - big * u / 2 + 'px', top: cy - big * u / 2 + 'px', width: big * u + 'px', height: big * u + 'px' }, 'abs crew');
+  // l'équipage, sans multiplicateurs : le Capitaine au centre, le Matelot et le Canonnier de chaque côté, le Perroquet sur son épaule
+  const big = tall ? 50 : 38, sd = tall ? 30 : 24, cx = W / 2, cy = tall ? H * .7 : H * .66;
+  const put = (id, dx, dy, sz) => add(JollyArt.crewSVG(id), { left: cx + dx * u - sz * u / 2 + 'px', top: cy + dy * u - sz * u / 2 + 'px', width: sz * u + 'px', height: sz * u + 'px' }, 'abs crew');
+  put(0, tall ? -32 : -34, tall ? 10 : 6, sd); put(2, tall ? 32 : 34, tall ? 10 : 6, sd);
+  put(3, 0, 0, big);
+  put(1, big * .42, -big * .38, big * .42);
 }
 if (layer === 'all') add('<span class="a">JOLLY</span><span class="b">WILDS</span>', { top: H * .05 + 'px', fontSize: (tall ? 25 : 16) * u + 'px' }, 'title');
 </script>
