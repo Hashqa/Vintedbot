@@ -14,7 +14,7 @@
         },
         {
             "name": "super",
-            "cost": 400.0,
+            "cost": 200.0,
             "events": "books_super.jsonl.zst",
             "weights": "lookUpTable_super_0.csv"
         }

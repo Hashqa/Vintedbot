@@ -1,7 +1,7 @@
 /*
   Jolly Wilds — dessins vectoriels (SVG intégrés, aucune image externe).
   symSVG(code)  : symbole du plateau ('0'..'8', 'W', 'S')
-  crewSVG(id)   : portrait d'un personnage de l'équipage (0 Mousse … 5 Kraken)
+  crewSVG(id)   : portrait d'un personnage de l'équipage (0 Matelot … 5 Kraken)
 */
 (function (root) {
   'use strict';
@@ -78,12 +78,14 @@
   const skin = '#f2c194', skinD = '#c98a5b';
   function face(extra) { return `<ellipse cx="50" cy="56" rx="22" ry="25" fill="${skin}" stroke="${skinD}" stroke-width="2"/>${extra}`; }
   const eyes = (y = 52) => `<circle cx="41" cy="${y}" r="3.2" fill="#1d1d2b"/><circle cx="59" cy="${y}" r="3.2" fill="#1d1d2b"/><circle cx="42" cy="${y - 1}" r="1" fill="#fff"/><circle cx="60" cy="${y - 1}" r="1" fill="#fff"/>`;
-  function cabin() {   // le Mousse : jeune, bandana rouge
-    return face(`${eyes()}<path d="M42 66 q8 7 16 0" stroke="#7a2b12" stroke-width="3" fill="none" stroke-linecap="round"/>
-      <circle cx="35" cy="61" r="3" fill="#ff8f8f" opacity=".6"/><circle cx="65" cy="61" r="3" fill="#ff8f8f" opacity=".6"/>
-      <path d="M27 46 q4 -22 23 -22 q19 0 23 22 q-23 -7 -46 0z" fill="#e63946" stroke="#7a0f19" stroke-width="2"/>
-      <circle cx="40" cy="36" r="2" fill="#fff"/><circle cx="56" cy="32" r="2" fill="#fff"/><circle cx="62" cy="40" r="2" fill="#fff"/>
-      <path d="M73 44 l10 6 l-4 -10 z" fill="#e63946" stroke="#7a0f19" stroke-width="1.5"/>`);
+  function deckhand() { // le Matelot : marin adulte, bonnet, barbe de trois jours, boucle d'oreille
+    return `<path d="M22 100 q4 -18 28 -20 q24 2 28 20z" fill="#f4f1e6"/><path d="M26 92 h48 M24 98 h52" stroke="#1f4fa8" stroke-width="4"/>
+      ` + face(`<path d="M30 60 q2 22 20 24 q18 -2 20 -24 q-6 10 -20 10 q-14 0 -20 -10z" fill="#8a6a4a" opacity=".55"/>
+      ${eyes(53)}<path d="M37 46 l9 1 M63 46 l-9 1" stroke="#4a2e16" stroke-width="3" stroke-linecap="round"/>
+      <path d="M43 68 q7 4 14 0" stroke="#7a2b12" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M48 58 q2 4 4 0" stroke="${skinD}" stroke-width="2" fill="none"/>
+      <circle cx="72" cy="62" r="3" fill="none" stroke="#ffc83d" stroke-width="2"/>
+      <path d="M26 44 q2 -24 24 -24 q22 0 24 24z" fill="#1f4fa8" stroke="#0d2f73" stroke-width="2"/>
+      <rect x="24" y="40" width="52" height="9" rx="4" fill="#2b6fd6" stroke="#0d2f73" stroke-width="2"/><path d="M30 44 h40" stroke="#9cc3ff" stroke-width="1.5" stroke-dasharray="3 3"/>`);
   }
   function parrot() {  // le Perroquet
     return `<path d="M30 88 q-6 -40 20 -58 q26 -6 30 22 q2 18 -10 36z" fill="#2ecc71" stroke="#0e5a2c" stroke-width="2.5"/>
@@ -120,7 +122,7 @@
       <ellipse cx="50" cy="50" rx="15" ry="12" fill="#ffe14d" stroke="#4a137a" stroke-width="2.5"/><rect x="47" y="40" width="6" height="20" rx="3" fill="#16161f"/>
       <circle cx="26" cy="70" r="2.5" fill="#e0aaff"/><circle cx="74" cy="70" r="2.5" fill="#e0aaff"/>`;
   }
-  const CREW_ART = [cabin, parrot, cook, gunner, captain, kraken];
+  const CREW_ART = [deckhand, parrot, cook, gunner, captain, kraken];
   function crewSVG(id, opts = {}) {
     const col = CREW_COLORS[id], g = gid('cr');
     return svg(`<defs><radialGradient id="${g}" cx=".5" cy=".4" r=".7"><stop offset="0" stop-color="${col}" stop-opacity=".95"/><stop offset="1" stop-color="#0a1230"/></radialGradient><clipPath id="${g}c"><circle cx="50" cy="50" r="45"/></clipPath></defs>

@@ -62,8 +62,12 @@ header.top{grid-area:top;display:flex;align-items:center;gap:var(--gap);min-widt
 body:not(.fs) .crewbar .cm{opacity:.55;filter:none}
 .board-wrap{position:relative;width:min(calc((100vh - var(--topH) - var(--wbH) - var(--crH) - var(--gap)*5 - 8px) * 1.25), calc(100vw - var(--sideW) - var(--ctrlW) - var(--gap)*7));max-width:100%;
   padding:clamp(3px,.9vmin,10px);border-radius:clamp(10px,2.4vmin,26px);background:linear-gradient(180deg,#a8692f,#5c2f10);box-shadow:0 0 0 2px #2b1405,0 10px 30px rgba(0,0,0,.5),inset 0 2px 0 rgba(255,255,255,.25)}
-.board{position:relative;aspect-ratio:5/4;display:grid;grid-template-columns:repeat(5,1fr);gap:clamp(2px,.5vmin,5px);border-radius:clamp(7px,1.7vmin,18px);overflow:hidden;
-  background:linear-gradient(180deg,#123a6e,#0a2148);padding:clamp(2px,.5vmin,5px)}
+.board{--bp:clamp(2px,.5vmin,5px);position:relative;aspect-ratio:5/4;max-width:100%;display:grid;grid-template-columns:repeat(5,1fr);gap:var(--bp);border-radius:clamp(7px,1.7vmin,18px);overflow:hidden;
+  background:linear-gradient(180deg,#123a6e,#0a2148);padding:var(--bp)}
+/* calque des wilds collants : mêmes colonnes que les rouleaux, il ne bouge pas quand les rouleaux tournent */
+.stickies{position:absolute;inset:0;padding:var(--bp);display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(4,1fr);column-gap:var(--bp);pointer-events:none;z-index:3}
+.cell.sticky{padding:6%}
+.cell.sticky::after{content:'';position:absolute;inset:4%;border-radius:50%;box-shadow:0 0 14px 2px rgba(255,214,120,.35);pointer-events:none}
 body.fs .board{background:linear-gradient(180deg,#2e1460,#120a33)}
 .reel{position:relative;overflow:hidden;border-radius:clamp(4px,1vmin,10px);background:rgba(255,255,255,.04)}
 .strip{position:absolute;left:0;right:0;top:0;will-change:transform}
@@ -131,7 +135,7 @@ body.fs .winbar{visibility:hidden}
   .round{width:clamp(28px,8vw,36px);height:clamp(28px,8vw,36px)}
 }
 /* replay : pas de commandes ni d'achats */
-body.replay .controls,body.replay .side{display:none!important}
+body.replay .controls,body.replay .side,body.replay .pill{display:none!important}
 body.replay .app{grid-template-columns:minmax(0,1fr);grid-template-areas:"top" "machine";grid-template-rows:var(--topH) minmax(0,1fr)}
 .machine:has(.rp-end) .winbar{visibility:hidden}
 body.replay .board-wrap{width:min(calc((100vh - var(--topH) - var(--wbH) - var(--crH) - var(--gap)*4 - 46px) * 1.25), calc(100vw - var(--gap)*4))}
@@ -148,6 +152,7 @@ body.replay .board-wrap{width:min(calc((100vh - var(--topH) - var(--wbH) - var(-
 .card h2{font-family:var(--display);font-weight:400;font-size:clamp(20px,5vmin,40px);margin:0 0 8px;color:var(--gold)}
 .card h3{font-family:var(--display);font-weight:400;font-size:clamp(15px,3vmin,22px);margin:16px 0 6px;color:var(--gold)}
 .card p,.card li{font-size:clamp(12px,2.3vmin,15px);line-height:1.45;color:#e8ecf8}
+.card .fine{color:var(--mute);font-size:13px}
 .card .kicker{text-transform:uppercase;letter-spacing:.12em;color:var(--mute);font-size:12px}
 .card .row{display:flex;justify-content:center;gap:10px;margin-top:14px;flex-wrap:wrap}
 .btn{border:0;border-radius:999px;padding:10px 22px;font-weight:800;font-size:clamp(13px,2.4vmin,16px)}

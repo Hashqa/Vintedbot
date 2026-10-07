@@ -1,47 +1,61 @@
 <!doctype html>
 <html><head><meta charset="utf-8">
-<!-- Tuile 3:4 et couverture 16:9 de Jolly Wilds. Rendu par tools/render-covers.js (?w=1200&h=1600 ou ?w=1920&h=1080). -->
+<!--
+  Tuile 3:4 et couverture 16:9 de Jolly Wilds, rendues par tools/render-covers.js.
+  ?w=1200&h=1600&layer=all|bg|fg
+    bg  : fond seul (décor clair, pour l'éditeur de tuile du Studio Stake)
+    fg  : personnages seuls, fond transparent (calque de premier plan)
+    all : image complète avec le titre
+  Règles Stake : image claire sans bords sombres, aucun texte promotionnel ni multiplicateur.
+-->
 <style>
 @font-face{font-family:'Lilita One';src:url(../frontend/theme/fonts/lilita-one-latin.woff2) format('woff2')}
-html,body{margin:0;overflow:hidden}
-#c{position:relative;overflow:hidden;background:linear-gradient(180deg,#1d5fa8 0%,#0d3770 45%,#06122b 100%)}
-.sun{position:absolute;border-radius:50%;background:radial-gradient(circle,#fff2a8 0%,#ffc83d 30%,rgba(255,159,28,0) 70%)}
-.sea{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(180deg,#0e4f8a,#04122e)}
-.wave{position:absolute;left:-5%;width:110%}
-.ship{position:absolute}
+html,body{margin:0;overflow:hidden;background:transparent}
+#c{position:relative;overflow:hidden}
+.abs{position:absolute}
+.crew{filter:drop-shadow(0 14px 18px rgba(0,40,80,.45))}
+.crew svg,.abs svg{width:100%;height:100%;display:block}
 .title{position:absolute;left:0;right:0;text-align:center;font-family:'Lilita One';line-height:.9;letter-spacing:.02em}
-.title .a{display:block;background:linear-gradient(180deg,#fff6c2,#ffc83d 55%,#ff8a00);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 .06em 0 #5a2a00) drop-shadow(0 .12em .1em rgba(0,0,0,.5))}
-.title .b{display:block;background:linear-gradient(180deg,#e0f7ff,#6cc4ff 50%,#1f6fff);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 .06em 0 #062a66) drop-shadow(0 .12em .1em rgba(0,0,0,.5))}
-.crew{position:absolute;filter:drop-shadow(0 12px 18px rgba(0,0,0,.55))}
-.crew svg{width:100%;height:100%;display:block}
-.coin{position:absolute;filter:drop-shadow(0 6px 8px rgba(0,0,0,.5))}
-.coin svg{width:100%;height:100%}
+.title .a{display:block;background:linear-gradient(180deg,#fff6c2,#ffc83d 55%,#ff8a00);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 .05em 0 #7a3a00) drop-shadow(0 .1em .1em rgba(0,40,80,.35))}
+.title .b{display:block;background:linear-gradient(180deg,#9fd8ff,#2f8cff 45%,#0f4fc4);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 .05em 0 #072a66) drop-shadow(0 0 .04em #072a66) drop-shadow(0 .1em .1em rgba(0,40,80,.35))}
 </style></head>
 <body><div id="c"></div>
 <script src="../frontend/engine.js"></script>
 <script src="../frontend/art.js"></script>
 <script>
-const q = new URLSearchParams(location.search), W = +(q.get('w') || 1200), H = +(q.get('h') || 1600), tall = H > W;
+const q = new URLSearchParams(location.search), W = +(q.get('w') || 1200), H = +(q.get('h') || 1600), tall = H > W, layer = q.get('layer') || 'all';
 const c = document.getElementById('c'); c.style.width = W + 'px'; c.style.height = H + 'px';
-const u = Math.min(W, H) / 100;   // unité
-const add = (html, css, cls) => { const d = document.createElement('div'); if (cls) d.className = cls; d.innerHTML = html; Object.assign(d.style, css); c.appendChild(d); return d; };
-add('', { left: (W / 2 - 40 * u) + 'px', top: (tall ? H * .2 : H * .12) + 'px', width: 80 * u + 'px', height: 80 * u + 'px' }, 'sun');
-// navire au loin
-add(`<svg viewBox="0 0 200 140"><path d="M20 100 L180 100 L160 128 L40 128Z" fill="#2a1405"/><rect x="96" y="10" width="5" height="92" fill="#2a1405"/><rect x="54" y="30" width="4" height="72" fill="#2a1405"/><rect x="140" y="34" width="4" height="68" fill="#2a1405"/>
-  <path d="M100 16 q30 22 0 46 q-30 -24 0 -46z M100 64 q36 18 0 34 q-36 -16 0 -34z M56 36 q20 18 0 34 q-20 -16 0 -34z M142 40 q18 16 0 30 q-18 -14 0 -30z" fill="#f3e2b5" opacity=".9"/>
-  <path d="M101 4 h22 l-6 6 l6 6 h-22z" fill="#16161f"/></svg>`, { left: (tall ? W * .62 : W * .76) + 'px', top: (tall ? H * .33 : H * .36) + 'px', width: (tall ? 34 : 22) * u + 'px', opacity: .85 }, 'ship');
-const sea = add('', { top: (tall ? H * .42 : H * .5) + 'px' }, 'sea');
-for (let i = 0; i < 4; i++) add(`<svg viewBox="0 0 400 40" preserveAspectRatio="none" style="width:100%;height:100%"><path d="M0 20 Q25 0 50 20 T100 20 T150 20 T200 20 T250 20 T300 20 T350 20 T400 20 V40 H0Z" fill="rgba(120,200,255,${.12 + i * .05})"/></svg>`,
-  { top: (tall ? H * (.42 + i * .07) : H * (.5 + i * .09)) + 'px', height: 5 * u + 'px' }, 'wave');
-// Kraken derrière, tentacules
-add(JollyArt.crewSVG(5, { mult: 100 }), tall ? { left: W * .5 - 25 * u + 'px', top: H * .37 + 'px', width: 50 * u + 'px', height: 50 * u + 'px' } : { left: W * .5 - 19 * u + 'px', top: H * .3 + 'px', width: 38 * u + 'px', height: 38 * u + 'px' }, 'crew');
-// l'équipage
-const pos = tall
-  ? [[4, 50, 76, 42], [0, 6, 58, 28], [1, 66, 56, 28], [2, 4, 78, 24], [3, 72, 78, 24]]
-  : [[4, 50, 72, 36], [0, 6, 42, 24], [1, 78, 40, 24], [2, 20, 66, 22], [3, 62, 66, 22]];
-for (const [id, x, y, s] of pos) add(JollyArt.crewSVG(id, { mult: JollyEngine.CONFIG.CREW[id].mult }), { left: (id === 4 ? W / 2 - s * u / 2 : x / 100 * W) + 'px', top: y / 100 * H - (id === 4 ? s * u / 2 : 0) + 'px', width: s * u + 'px', height: s * u + 'px' }, 'crew');
-// pièces Bonus
-for (const [x, y, s] of (tall ? [[10, 44, 12], [82, 44, 10], [44, 92, 9]] : [[4, 74, 10], [88, 70, 11], [50, 88, 8]])) add(JollyArt.symSVG('S'), { left: x / 100 * W + 'px', top: y / 100 * H + 'px', width: s * u + 'px', height: s * u + 'px' }, 'coin');
-add('<span class="a">JOLLY</span><span class="b">WILDS</span>', { top: (tall ? H * .05 : H * .05) + 'px', fontSize: (tall ? 26 : 17) * u + 'px' }, 'title');
+const u = Math.min(W, H) / 100;
+const add = (html, css, cls = 'abs') => { const d = document.createElement('div'); d.className = cls; d.innerHTML = html; Object.assign(d.style, css); c.appendChild(d); return d; };
+
+if (layer !== 'fg') {
+  // ciel clair de fin d'après-midi, mer turquoise, île et navire : lumineux jusqu'aux bords
+  c.style.background = 'linear-gradient(180deg,#7fd3ff 0%,#b9ecff 38%,#ffe9b0 52%,#40c4d8 53%,#1fa6c9 75%,#33b8d6 100%)';
+  const horizon = H * .525;
+  add('', { left: W * .5 - 34 * u + 'px', top: horizon - 34 * u + 'px', width: 68 * u + 'px', height: 68 * u + 'px', borderRadius: '50%', background: 'radial-gradient(circle,#fffbe0 0%,#ffe27a 35%,rgba(255,226,122,0) 70%)' });
+  for (const [x, y, s] of [[.12, .12, 22], [.7, .08, 28], [.42, .2, 18]]) add('', { left: W * x + 'px', top: H * y + 'px', width: s * u + 'px', height: s * u * .38 + 'px', borderRadius: '999px', background: 'rgba(255,255,255,.85)', boxShadow: `${s * u * .25}px ${s * u * .05}px 0 ${-s * u * .04}px rgba(255,255,255,.85)` });
+  // île
+  add(`<svg viewBox="0 0 200 80"><path d="M0 80 Q40 20 100 24 Q160 20 200 80Z" fill="#f2d48a"/><path d="M20 80 Q60 36 110 38 Q150 40 180 80Z" fill="#3fb36b"/>
+    <path d="M120 40 q-4 -26 6 -40" stroke="#8a5a2b" stroke-width="4" fill="none"/><path d="M126 2 q-18 -2 -26 10 M126 2 q16 -6 26 6 M126 2 q-6 10 -18 14 M126 2 q10 6 14 18" stroke="#2e9a55" stroke-width="6" fill="none" stroke-linecap="round"/></svg>`,
+    { left: (tall ? W * .02 : W * .03) + 'px', top: horizon - 9 * u + 'px', width: (tall ? 34 : 26) * u + 'px', height: 13 * u + 'px' });
+  // navire
+  add(`<svg viewBox="0 0 200 140"><path d="M20 100 L180 100 L160 128 L40 128Z" fill="#7a4a22"/><rect x="96" y="10" width="5" height="92" fill="#5a3416"/><rect x="54" y="30" width="4" height="72" fill="#5a3416"/><rect x="140" y="34" width="4" height="68" fill="#5a3416"/>
+    <path d="M100 16 q30 22 0 46 q-30 -24 0 -46z M100 64 q36 18 0 34 q-36 -16 0 -34z M56 36 q20 18 0 34 q-20 -16 0 -34z M142 40 q18 16 0 30 q-18 -14 0 -30z" fill="#fffaf0"/>
+    <path d="M101 4 h22 l-6 6 l6 6 h-22z" fill="#16161f"/></svg>`, { left: (tall ? W * .66 : W * .78) + 'px', top: horizon - 17 * u + 'px', width: (tall ? 30 : 20) * u + 'px', height: 21 * u + 'px' });
+  for (let i = 0; i < 4; i++) add(`<svg viewBox="0 0 400 40" preserveAspectRatio="none"><path d="M0 20 Q25 0 50 20 T100 20 T150 20 T200 20 T250 20 T300 20 T350 20 T400 20 V40 H0Z" fill="rgba(255,255,255,${.18 + i * .05})"/></svg>`,
+    { left: '-5%', width: '110%', top: horizon + H * (.06 + i * .1) + 'px', height: 4 * u + 'px' });
+}
+if (layer !== 'bg') {
+  // l'équipage, sans multiplicateurs : le Capitaine au centre, le Kraken derrière
+  const big = tall ? 46 : 34;
+  const cx = W / 2, cy = tall ? H * .7 : H * .66;
+  add(JollyArt.crewSVG(5), { left: cx - big * .55 * u + 'px', top: cy - big * 1.05 * u + 'px', width: big * 1.1 * u + 'px', height: big * 1.1 * u + 'px' }, 'abs crew');
+  const side = tall
+    ? [[0, -38, -8, 26], [1, 38, -10, 26], [2, -30, 16, 24], [3, 30, 15, 24]]
+    : [[0, -30, -12, 22], [1, 30, -12, 22], [2, -18, 14, 20], [3, 18, 14, 20]];
+  for (const [id, dx, dy, s] of side) add(JollyArt.crewSVG(id), { left: cx + dx * u - s * u / 2 + 'px', top: cy + dy * u - s * u / 2 + 'px', width: s * u + 'px', height: s * u + 'px' }, 'abs crew');
+  add(JollyArt.crewSVG(4), { left: cx - big * u / 2 + 'px', top: cy - big * u / 2 + 'px', width: big * u + 'px', height: big * u + 'px' }, 'abs crew');
+}
+if (layer === 'all') add('<span class="a">JOLLY</span><span class="b">WILDS</span>', { top: H * .05 + 'px', fontSize: (tall ? 25 : 16) * u + 'px' }, 'title');
 </script>
 </body></html>
