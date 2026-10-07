@@ -1,0 +1,66 @@
+{
+  "base": {
+    "books": 150040,
+    "facteurs": {
+      "L": 0.9968,
+      "M": 1,
+      "T": 1,
+      "H": 1
+    },
+    "secondes": 18,
+    "tailleLivresMo": 4.5,
+    "rtp": 0.9619999205060957,
+    "bonusUnSur": 292.2,
+    "hitRate": 0.5452365625947685,
+    "probLessThanBet": 0.8199587192585756,
+    "prob5k": 1.9999365643115725e-7,
+    "prob10k": 1.9999365643115725e-7,
+    "etl40b": 0.33209842343908424,
+    "etl10k": 0.001999936564311572,
+    "maxWinHitRate": 1.9999365643115725e-7,
+    "maxWin": 10000
+  },
+  "bonus": {
+    "books": 12040,
+    "facteurs": {
+      "L": 1.6601,
+      "M": 1,
+      "T": 1,
+      "H": 1
+    },
+    "secondes": 10,
+    "tailleLivresMo": 5.9,
+    "rtp": 0.9619999145200321,
+    "bonusUnSur": null,
+    "hitRate": 1,
+    "probLessThanBet": 0.7066228031891773,
+    "prob5k": 0,
+    "prob10k": 0,
+    "etl40b": 0.14998861395159457,
+    "etl10k": 0.14998861395159457,
+    "maxWinHitRate": 0.000014998861395159459,
+    "maxWin": 10000
+  },
+  "super": {
+    "books": 12040,
+    "facteurs": {
+      "L": 1.2106,
+      "M": 1,
+      "T": 1,
+      "H": 1
+    },
+    "secondes": 9,
+    "tailleLivresMo": 6.2,
+    "rtp": 0.961999943901853,
+    "bonusUnSur": null,
+    "hitRate": 1,
+    "probLessThanBet": 0.6924487990371954,
+    "prob5k": 0,
+    "prob10k": 0,
+    "etl40b": 0,
+    "etl10k": 0.1499861974439558,
+    "maxWinHitRate": 0.00001499861974439558,
+    "maxWin": 10000
+  },
+  "_ecartRTPmax": 2.9381820865204133e-8
+}

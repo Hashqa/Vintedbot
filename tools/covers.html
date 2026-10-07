@@ -1,0 +1,47 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- Tuile 3:4 et couverture 16:9 de Jolly Wilds. Rendu par tools/render-covers.js (?w=1200&h=1600 ou ?w=1920&h=1080). -->
+<style>
+@font-face{font-family:'Lilita One';src:url(../frontend/theme/fonts/lilita-one-latin.woff2) format('woff2')}
+html,body{margin:0;overflow:hidden}
+#c{position:relative;overflow:hidden;background:linear-gradient(180deg,#1d5fa8 0%,#0d3770 45%,#06122b 100%)}
+.sun{position:absolute;border-radius:50%;background:radial-gradient(circle,#fff2a8 0%,#ffc83d 30%,rgba(255,159,28,0) 70%)}
+.sea{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(180deg,#0e4f8a,#04122e)}
+.wave{position:absolute;left:-5%;width:110%}
+.ship{position:absolute}
+.title{position:absolute;left:0;right:0;text-align:center;font-family:'Lilita One';line-height:.9;letter-spacing:.02em}
+.title .a{display:block;background:linear-gradient(180deg,#fff6c2,#ffc83d 55%,#ff8a00);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 .06em 0 #5a2a00) drop-shadow(0 .12em .1em rgba(0,0,0,.5))}
+.title .b{display:block;background:linear-gradient(180deg,#e0f7ff,#6cc4ff 50%,#1f6fff);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 .06em 0 #062a66) drop-shadow(0 .12em .1em rgba(0,0,0,.5))}
+.crew{position:absolute;filter:drop-shadow(0 12px 18px rgba(0,0,0,.55))}
+.crew svg{width:100%;height:100%;display:block}
+.coin{position:absolute;filter:drop-shadow(0 6px 8px rgba(0,0,0,.5))}
+.coin svg{width:100%;height:100%}
+</style></head>
+<body><div id="c"></div>
+<script src="../frontend/engine.js"></script>
+<script src="../frontend/art.js"></script>
+<script>
+const q = new URLSearchParams(location.search), W = +(q.get('w') || 1200), H = +(q.get('h') || 1600), tall = H > W;
+const c = document.getElementById('c'); c.style.width = W + 'px'; c.style.height = H + 'px';
+const u = Math.min(W, H) / 100;   // unité
+const add = (html, css, cls) => { const d = document.createElement('div'); if (cls) d.className = cls; d.innerHTML = html; Object.assign(d.style, css); c.appendChild(d); return d; };
+add('', { left: (W / 2 - 40 * u) + 'px', top: (tall ? H * .2 : H * .12) + 'px', width: 80 * u + 'px', height: 80 * u + 'px' }, 'sun');
+// navire au loin
+add(`<svg viewBox="0 0 200 140"><path d="M20 100 L180 100 L160 128 L40 128Z" fill="#2a1405"/><rect x="96" y="10" width="5" height="92" fill="#2a1405"/><rect x="54" y="30" width="4" height="72" fill="#2a1405"/><rect x="140" y="34" width="4" height="68" fill="#2a1405"/>
+  <path d="M100 16 q30 22 0 46 q-30 -24 0 -46z M100 64 q36 18 0 34 q-36 -16 0 -34z M56 36 q20 18 0 34 q-20 -16 0 -34z M142 40 q18 16 0 30 q-18 -14 0 -30z" fill="#f3e2b5" opacity=".9"/>
+  <path d="M101 4 h22 l-6 6 l6 6 h-22z" fill="#16161f"/></svg>`, { left: (tall ? W * .62 : W * .76) + 'px', top: (tall ? H * .33 : H * .36) + 'px', width: (tall ? 34 : 22) * u + 'px', opacity: .85 }, 'ship');
+const sea = add('', { top: (tall ? H * .42 : H * .5) + 'px' }, 'sea');
+for (let i = 0; i < 4; i++) add(`<svg viewBox="0 0 400 40" preserveAspectRatio="none" style="width:100%;height:100%"><path d="M0 20 Q25 0 50 20 T100 20 T150 20 T200 20 T250 20 T300 20 T350 20 T400 20 V40 H0Z" fill="rgba(120,200,255,${.12 + i * .05})"/></svg>`,
+  { top: (tall ? H * (.42 + i * .07) : H * (.5 + i * .09)) + 'px', height: 5 * u + 'px' }, 'wave');
+// Kraken derrière, tentacules
+add(JollyArt.crewSVG(5, { mult: 100 }), tall ? { left: W * .5 - 25 * u + 'px', top: H * .37 + 'px', width: 50 * u + 'px', height: 50 * u + 'px' } : { left: W * .5 - 19 * u + 'px', top: H * .3 + 'px', width: 38 * u + 'px', height: 38 * u + 'px' }, 'crew');
+// l'équipage
+const pos = tall
+  ? [[4, 50, 76, 42], [0, 6, 58, 28], [1, 66, 56, 28], [2, 4, 78, 24], [3, 72, 78, 24]]
+  : [[4, 50, 72, 36], [0, 6, 42, 24], [1, 78, 40, 24], [2, 20, 66, 22], [3, 62, 66, 22]];
+for (const [id, x, y, s] of pos) add(JollyArt.crewSVG(id, { mult: JollyEngine.CONFIG.CREW[id].mult }), { left: (id === 4 ? W / 2 - s * u / 2 : x / 100 * W) + 'px', top: y / 100 * H - (id === 4 ? s * u / 2 : 0) + 'px', width: s * u + 'px', height: s * u + 'px' }, 'crew');
+// pièces Bonus
+for (const [x, y, s] of (tall ? [[10, 44, 12], [82, 44, 10], [44, 92, 9]] : [[4, 74, 10], [88, 70, 11], [50, 88, 8]])) add(JollyArt.symSVG('S'), { left: x / 100 * W + 'px', top: y / 100 * H + 'px', width: s * u + 'px', height: s * u + 'px' }, 'coin');
+add('<span class="a">JOLLY</span><span class="b">WILDS</span>', { top: (tall ? H * .05 : H * .05) + 'px', fontSize: (tall ? 26 : 17) * u + 'px' }, 'title');
+</script>
+</body></html>
