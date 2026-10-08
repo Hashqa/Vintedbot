@@ -33,10 +33,14 @@ function makeT(soc) {
     balance: 'Balance', bet: soc ? 'Play amount' : 'Bet', buy: 'Bonus', sup: 'Superbonus',
     buyD: CFG.FS_AWARD[3] + '+ free spins. Crew wilds stay until the end.', supD: 'Elite crew only: every wild is x4 or x5.',
     fsLeft: 'Free spins', fsWin: 'Bonus win', hint: 'Match symbols on adjacent reels from the left. 1024 ways.', luck: 'Good luck…',
-    nowin: 'No win this time.', win: 'Win', bonusDone: 'Bonus complete!',
+    nowin: '', win: 'Win', bonusDone: 'Bonus complete!',
     crew: ['Deckhand', 'Parrot', 'Gunner', 'Captain'],
-    syms: ['Treasure chest', 'Rum', 'Map', 'Compass', 'A', 'K', 'Q', 'J', '10'],
+    syms: ['Treasure chest', 'Rum bottle', 'Map', 'Compass', 'Skull & swords', 'Anchor', 'Cannon', 'Spyglass', 'Rum barrel'],
     boards: n => 'The ' + n + ' comes aboard!', stays: 'This wild stays until the end of the bonus',
+    duel: 'DUEL!', vs: 'vs', duelWin: (n, m) => 'The ' + n + ' x' + m + ' wins the duel!', chestMsg: m => 'The chest opens: a wild goes up to x' + m + '!',
+    meterLab: 'Flags', meterHint: CFG.FLAG_METER + ' flags = ' + CFG.FLAG_SPINS + ' free spins', flagAward: n => '+' + n + ' FREE SPINS!', flagLeftLab: n => 'free spin' + (n > 1 ? 's' : ''),
+    flagSpinMsg: (n, left) => 'Flag free spin ' + n + (left ? ' · ' + left + ' left' : ''),
+    xBet: x => x + '× the ' + (soc ? 'play amount' : 'bet'),
     trig: 'Bonus triggered', spins: n => n + ' FREE SPINS',
     intro: 'On each free spin, a member of the crew may come aboard and drop a wild on reels 2 to 5. <b>Crew wilds stay in place until the end of the bonus</b>, each with its character\'s multiplier.',
     introSup: 'Superbonus: only the elite crew comes aboard (x4 and x5).', start: 'Start',
@@ -54,16 +58,20 @@ function makeT(soc) {
     err: { ERR_IPB: 'Insufficient balance.', ERR_IS: 'Your session has expired. Please reload the game.', ERR_ATE: 'Authentication failed. Please reload the game.', ERR_GLE: soc ? 'Play limit reached.' : 'Limit reached.', ERR_LOC: 'This game is not available in your location.', ERR_MAINTENANCE: 'The game is under maintenance. Please try again later.', ERR_VAL: 'Invalid request. Please reload the game.', def: 'Connection problem. Please try again.' },
     controls: [['Spin (large round button)', 'Starts a spin. During autoplay it shows the spins left; tap it to stop.'], ['− / +', 'Lowers or raises the ' + P + '.'], ['Auto (circular arrows)', 'Opens the autoplay window: choose a number of spins, then confirm to start.'], ['Turbo (lightning)', 'Speeds up the animations.'],
       ['BONUS', 'Opens the bonus window: Bonus for ' + BUY_STD + '× the ' + P + ' or Superbonus for ' + BUY_SUP + '× the ' + P + ' (elite crew only), each confirmed before it starts.'],
-      ['Menu (☰)', 'Opens the game rules (?), the music (♪) and the sound (speaker) buttons.'], ['Space', 'Starts a spin (when allowed).']],
+      ['Menu (☰)', 'Opens or closes the menu with the three buttons below.'], ['?', 'Opens these game rules.'], ['♪ (music)', 'Turns the music on or off.'], ['Speaker (sound)', 'Turns all sound on or off: effects and music.'], ['Space', 'Starts a spin (when allowed).']],
     winLab: 'Win', menuTip: 'Menu', buyTitle: 'Choose a bonus', buyPick: soc ? 'Get' : 'Buy', autoTitle: 'Autoplay', autoPick: 'Number of spins',
     rules: f => `<h2>Rules</h2>
       <p>5 reels, 4 rows, <b>1024 ways</b>. A win is formed by matching symbols on <b>3, 4 or 5 adjacent reels, starting from the leftmost reel</b>, in any position. Each combination of one matching position per reel is one way, and every way wins the value below. Values are per way, for your current ${P} of <b>${f.bet}</b>. Wins of different symbols add up.</p>
       ${f.table}
-      <h3>Wild</h3><p>${f.wild} The Wild appears on reels 2 to 5 in the base game and substitutes for every symbol except Bonus.</p>
+      <h3>Wild and flag meter</h3><p>${f.wild} The Wild flag appears on reels 2 to 5 in the base game and substitutes for every symbol except Bonus.</p>
+      <p><b>Flag meter:</b> in the base game, every Wild flag that lands is collected in the meter above the reels once the wins of the spin are added. Each time the meter reaches ${CFG.FLAG_METER} flags, it empties and awards <b>${CFG.FLAG_SPINS} free spins</b>, played straight away at the same ${P}. They work like base game spins, except that no Bonus symbol can land; Wild flags that land during them are collected too. The meter only lasts for the current round: a flag left in it when the round ends is lost, and every new round starts with an empty meter.</p>
       <h3>Free spins</h3><p>${f.scatter} 3 Bonus symbols anywhere award ${CFG.FS_AWARD[3]} free spins, 4 award ${CFG.FS_AWARD[4]} and 5 award ${CFG.FS_AWARD[5]}. During the bonus, 3 or more Bonus symbols award ${CFG.RETRIGGER} extra free spins, and the wilds already on the reels stay. A bonus always wins at least <b>${MIN_BONUS_X}× the ${P}</b>: if the bonus ends below that, the difference is added.</p>
-      <h3>The crew and sticky wilds</h3><p>On each free spin, a member of the crew may come aboard (about one spin in ${Math.round(1 / CFG.BOARD_CHANCE * 10) / 10}). They drop one wild on a random free position of reels 2 to 5. <b>This wild stays in place until the end of the bonus</b> and keeps the multiplier of the character who dropped it, so wilds from different characters build up on the reels.</p>
-      <p>Crew wilds substitute for every symbol except Bonus. If a way goes through several crew wilds, their multipliers are added together (x2 + x4 = x6). A way without a crew wild counts ×1. All obtainable multipliers:</p>
+      <h3>The crew and sticky wilds</h3><p>On each free spin, a member of the crew may come aboard (about 4 free spins in 10). They drop one wild on a random free position of reels 2 to 5. <b>This wild stays in place until the end of the bonus</b> and keeps the multiplier of the character who dropped it, so wilds from different characters build up on the reels.</p>
+      <p>Crew wilds substitute for every symbol except Bonus. If a way goes through several crew wilds, their multipliers are added together (x2 + x4 = x6). A way without a crew wild counts ×1.</p>
       ${f.crew}
+      <h3>Duels</h3><p>On some free spins, two crew wilds of different characters fight a duel. The one with the higher multiplier usually wins, but not always. The loser changes sides: its wild takes the character and the multiplier of the winner, and stays in place.</p>
+      <h3>Treasure chests</h3><p>During free spins, a Treasure chest that lands on the reels may open: it raises the multiplier of one crew wild by 1, up to <b>x${CFG.MAX_STICKY_MULT}</b>.</p>
+      <p>All obtainable crew wild multipliers: ${Array.from({ length: CFG.MAX_STICKY_MULT - 1 }, (_, i) => 'x' + (i + 2)).join(', ')}.</p>
       ${f.buy}
       <h3>Modes, return to player and max win</h3>${f.modes}
       <p>Wins are capped at <b>${MAX_WIN_X.toLocaleString('en-US')}× the ${P}</b> in every mode. When the max win is reached, the round ends and the max win is awarded.</p>
@@ -77,10 +85,14 @@ function makeT(soc) {
     balance: 'Solde', bet: 'Mise', buy: 'Bonus', sup: 'Superbonus',
     buyD: CFG.FS_AWARD[3] + ' free spins ou plus. Les wilds de l’équipage restent jusqu’au bout.', supD: 'Équipage d’élite seulement : chaque wild vaut x4 ou x5.',
     fsLeft: 'Free spins', fsWin: 'Gain du bonus', hint: 'Alignez des symboles sur des rouleaux voisins depuis la gauche. 1024 façons.', luck: 'Bonne chance…',
-    nowin: 'Pas de gain cette fois.', win: 'Gain', bonusDone: 'Bonus terminé !',
+    nowin: '', win: 'Gain', bonusDone: 'Bonus terminé !',
     crew: ['Matelot', 'Perroquet', 'Canonnier', 'Capitaine'],
-    syms: ['Coffre', 'Rhum', 'Carte', 'Boussole', 'A', 'K', 'Q', 'J', '10'],
+    syms: ['Coffre', 'Bouteille de rhum', 'Carte', 'Boussole', 'Crâne et épées', 'Ancre', 'Canon', 'Longue-vue', 'Baril de rhum'],
     boards: n => 'Le ' + n + ' monte à bord !', stays: 'Ce wild reste jusqu’à la fin du bonus',
+    duel: 'DUEL !', vs: 'contre', duelWin: (n, m) => 'Le ' + n + ' x' + m + ' gagne le duel !', chestMsg: m => 'Le coffre s’ouvre : un wild passe à x' + m + ' !',
+    meterLab: 'Drapeaux', meterHint: CFG.FLAG_METER + ' drapeaux = ' + CFG.FLAG_SPINS + ' spins gratuits', flagAward: n => '+' + n + ' SPINS GRATUITS !', flagLeftLab: n => 'spin' + (n > 1 ? 's' : '') + ' gratuit' + (n > 1 ? 's' : ''),
+    flagSpinMsg: (n, left) => 'Spin gratuit du pavillon ' + n + (left ? ' · encore ' + left : ''),
+    xBet: x => String(x).replace('.', ',') + ' fois la mise',
     trig: 'Bonus déclenché', spins: n => n + ' FREE SPINS',
     intro: 'À chaque free spin, un membre de l’équipage peut monter à bord et poser un wild sur les rouleaux 2 à 5. <b>Les wilds de l’équipage restent en place jusqu’à la fin du bonus</b>, chacun avec le multiplicateur de son personnage.',
     introSup: 'Superbonus : seul l’équipage d’élite monte à bord (x4 et x5).', start: 'Commencer',
@@ -98,16 +110,20 @@ function makeT(soc) {
     err: { ERR_IPB: 'Solde insuffisant.', ERR_IS: 'Votre session a expiré. Rechargez le jeu.', ERR_ATE: 'Échec de l’authentification. Rechargez le jeu.', ERR_GLE: 'Limite atteinte.', ERR_LOC: 'Ce jeu n’est pas disponible dans votre pays.', ERR_MAINTENANCE: 'Le jeu est en maintenance. Réessayez plus tard.', ERR_VAL: 'Requête invalide. Rechargez le jeu.', def: 'Problème de connexion. Réessayez.' },
     controls: [['Lancer (grand bouton rond)', 'Lance un spin. En automatique, il affiche les spins restants ; touchez-le pour arrêter.'], ['− / +', 'Baisse ou augmente la mise.'], ['Auto (flèches en cercle)', 'Ouvre la fenêtre des spins automatiques : choisissez un nombre de spins, puis confirmez pour lancer.'], ['Turbo (éclair)', 'Accélère les animations.'],
       ['BONUS', 'Ouvre la fenêtre des bonus : Bonus pour ' + BUY_STD + ' fois la mise ou Superbonus pour ' + BUY_SUP + ' fois la mise (équipage d’élite), chacun confirmé avant de démarrer.'],
-      ['Menu (☰)', 'Ouvre les règles du jeu (?), la musique (♪) et le son (haut-parleur).'], ['Espace', 'Lance un spin (si autorisé).']],
+      ['Menu (☰)', 'Ouvre ou ferme le menu et ses trois boutons ci-dessous.'], ['?', 'Ouvre ces règles du jeu.'], ['♪ (musique)', 'Active ou coupe la musique.'], ['Haut-parleur (son)', 'Active ou coupe tous les sons : effets et musique.'], ['Espace', 'Lance un spin (si autorisé).']],
     winLab: 'Gain', menuTip: 'Menu', buyTitle: 'Choisissez un bonus', buyPick: 'Acheter', autoTitle: 'Spins automatiques', autoPick: 'Nombre de spins',
     rules: f => `<h2>Règles</h2>
       <p>5 rouleaux, 4 rangées, <b>1024 façons de gagner</b>. Un gain se forme avec des symboles identiques sur <b>3, 4 ou 5 rouleaux voisins, en partant du rouleau de gauche</b>, à n'importe quelle position. Chaque combinaison d'une position par rouleau est une façon, et chaque façon rapporte la valeur du tableau. Les valeurs sont données par façon, pour votre mise actuelle de <b>${f.bet}</b>. Les gains de symboles différents s'additionnent.</p>
       ${f.table}
-      <h3>Wild</h3><p>${f.wild} Le Wild apparaît sur les rouleaux 2 à 5 en jeu de base et remplace tous les symboles sauf le Bonus.</p>
+      <h3>Wild et jauge du pavillon</h3><p>${f.wild} Le drapeau Wild apparaît sur les rouleaux 2 à 5 en jeu de base et remplace tous les symboles sauf le Bonus.</p>
+      <p><b>Jauge du pavillon :</b> en jeu de base, chaque drapeau Wild qui tombe est ramassé, une fois le spin payé, dans la jauge au-dessus des rouleaux. Chaque fois que la jauge atteint ${CFG.FLAG_METER} drapeaux, elle se vide et donne <b>${CFG.FLAG_SPINS} spins gratuits</b>, joués tout de suite avec la même mise. Ils fonctionnent comme des spins du jeu de base, sauf qu'aucun symbole Bonus ne peut tomber ; les drapeaux Wild qui tombent pendant ces spins sont ramassés aussi. La jauge ne dure que le temps de la partie : un drapeau qui y reste à la fin de la partie est perdu, et chaque nouvelle partie commence avec une jauge vide.</p>
       <h3>Free spins</h3><p>${f.scatter} 3 symboles Bonus n'importe où donnent ${CFG.FS_AWARD[3]} free spins, 4 en donnent ${CFG.FS_AWARD[4]} et 5 en donnent ${CFG.FS_AWARD[5]}. Pendant le bonus, 3 symboles Bonus ou plus ajoutent ${CFG.RETRIGGER} free spins, et les wilds déjà posés restent. Un bonus rapporte toujours au moins <b>${MIN_BONUS_X} fois la mise</b> : s'il se termine en dessous, la différence est ajoutée.</p>
-      <h3>L'équipage et les wilds collants</h3><p>À chaque free spin, un membre de l'équipage peut monter à bord (environ un spin sur ${String(Math.round(1 / CFG.BOARD_CHANCE * 10) / 10).replace('.', ',')}). Il pose un wild sur une position libre des rouleaux 2 à 5, choisie au hasard. <b>Ce wild reste en place jusqu'à la fin du bonus</b> et garde le multiplicateur du personnage qui l'a posé : les wilds de différents personnages s'accumulent sur les rouleaux.</p>
-      <p>Les wilds de l'équipage remplacent tous les symboles sauf le Bonus. Si une façon passe par plusieurs wilds de l'équipage, leurs multiplicateurs s'additionnent (x2 + x4 = x6). Une façon sans wild de l'équipage compte ×1. Tous les multiplicateurs possibles :</p>
+      <h3>L'équipage et les wilds collants</h3><p>À chaque free spin, un membre de l'équipage peut monter à bord (environ 4 free spins sur 10). Il pose un wild sur une position libre des rouleaux 2 à 5, choisie au hasard. <b>Ce wild reste en place jusqu'à la fin du bonus</b> et garde le multiplicateur du personnage qui l'a posé : les wilds de différents personnages s'accumulent sur les rouleaux.</p>
+      <p>Les wilds de l'équipage remplacent tous les symboles sauf le Bonus. Si une façon passe par plusieurs wilds de l'équipage, leurs multiplicateurs s'additionnent (x2 + x4 = x6). Une façon sans wild de l'équipage compte ×1.</p>
       ${f.crew}
+      <h3>Duels</h3><p>Sur certains free spins, deux wilds de personnages différents s'affrontent en duel. Celui qui a le plus gros multiplicateur gagne le plus souvent, mais pas toujours. Le perdant change de camp : son wild prend le personnage et le multiplicateur du gagnant, et reste en place.</p>
+      <h3>Coffres au trésor</h3><p>Pendant les free spins, un Coffre qui tombe sur les rouleaux peut s'ouvrir : il augmente de 1 le multiplicateur d'un wild de l'équipage, jusqu'à <b>x${CFG.MAX_STICKY_MULT}</b>.</p>
+      <p>Tous les multiplicateurs possibles d'un wild de l'équipage : ${Array.from({ length: CFG.MAX_STICKY_MULT - 1 }, (_, i) => 'x' + (i + 2)).join(', ')}.</p>
       ${f.buy}
       <h3>Modes, taux de retour et gain maximum</h3>${f.modes}
       <p>Les gains sont plafonnés à <b>${MAX_WIN_X.toLocaleString('fr-FR')} fois la mise</b> dans chaque mode. Dès que le gain maximum est atteint, la partie s'arrête et il est accordé.</p>
@@ -168,6 +184,8 @@ const SFX = {
   scatter: () => tone(880, .35, 'sine', .1, 1320),
   crew: m => { const base = 220 + Math.min(m, 100) * 4; [0, 4, 7, 12].forEach((s, i) => tone(base * 2 ** (s / 12), .22, 'sawtooth', .05, null, i * .08)); },
   splash: () => tone(300, .3, 'triangle', .07, 60),
+  flag: () => { [392, 523, 659].forEach((f, i) => tone(f, .16, 'square', .05, null, i * .06)); },
+  duel: () => { [0, .12, .24].forEach(d => tone(180, .1, 'square', .06, 120, d)); tone(1600, .25, 'sawtooth', .03, 900, .36); },
   big: () => { [392, 523, 659, 784, 1047].forEach((f, i) => tone(f, .3, 'triangle', .08, null, i * .06)); }
 };
 /* musique : petite chanson de marins en boucle, générée en direct */
@@ -200,19 +218,26 @@ const reelEls = [];
 for (let r = 0; r < REELS; r++) { const d = document.createElement('div'); d.className = 'reel'; boardEl.appendChild(d); reelEls.push(d); }
 const boardOf = b => b.map(s => s.split(''));
 const CREW_CODES = CFG.CREW_CODES;
-const crewHTML = id => `${crewSVG(id)}<span class="mult" style="--cc:${CREW_COLORS[id]}">x${CFG.CREW[id].mult}</span>`;
+const crewHTML = (id, m) => `${crewSVG(id)}<span class="mult" style="--cc:${CREW_COLORS[id]}">x${m || CFG.CREW[id].mult}</span>`;
 // Dans les rouleaux, une case occupée par un wild collant reste vide : le wild est dessiné par-dessus (calque fixe).
 function cellHTML(code) { return CREW_CODES.includes(code) ? '' : symSVG(code); }
 const stickyLayer = document.createElement('div'); stickyLayer.className = 'stickies'; boardEl.appendChild(stickyLayer);
 const stickyEls = new Map();      // case → élément du wild collant
-function setSticky(c, id, drop) {
-  if (stickyEls.has(c)) return;
+function setSticky(c, id, m, drop) {
+  if (stickyEls.has(c)) { updateSticky(c, id, m); return; }
   const el = document.createElement('div'); el.className = 'cell sticky' + (drop ? ' crew' : '');
   el.style.gridColumn = String(((c / ROWS) | 0) + 1); el.style.gridRow = String((c % ROWS) + 1);
-  el.innerHTML = crewHTML(id); stickyLayer.appendChild(el); stickyEls.set(c, el);
+  el.dataset.id = id; el.dataset.m = m; el.innerHTML = crewHTML(id, m); stickyLayer.appendChild(el); stickyEls.set(c, el);
+}
+function updateSticky(c, id, m, fx) {
+  const el = stickyEls.get(c); if (!el) return;
+  if (+el.dataset.id === id && +el.dataset.m === m) return;
+  el.dataset.id = id; el.dataset.m = m; el.innerHTML = crewHTML(id, m);
+  if (fx) { el.classList.remove(fx); void el.offsetWidth; el.classList.add(fx); }
 }
 function clearStickies() { stickyLayer.innerHTML = ''; stickyEls.clear(); }
-function syncStickies(board) { board.forEach((col, r) => col.forEach((code, y) => { const id = CREW_CODES.indexOf(code); if (id >= 0) setSticky(r * ROWS + y, id, false); })); }
+// état des wilds collants donné par l'événement reveal : [[case, id, multiplicateur]]
+function syncStickies(list) { for (const [c, id, m] of list || []) setSticky(c, id, m, false); }
 function makeStrip(codes) {
   const s = document.createElement('div'); s.className = 'strip'; s.style.height = (codes.length * 25) + '%';
   s.innerHTML = codes.map(c => `<div class="cell" style="height:${100 / codes.length}%">${cellHTML(c)}</div>`).join('');
@@ -221,7 +246,7 @@ function makeStrip(codes) {
 function drawReel(r) { reelEls[r].innerHTML = ''; reelEls[r].appendChild(makeStrip(grid[r])); }
 function drawBoard() { for (let r = 0; r < REELS; r++) drawReel(r); }
 const cellEl = i => stickyEls.get(i) || reelEls[(i / ROWS) | 0].querySelector('.strip').children[i % ROWS];
-function clearMarks() { boardEl.classList.remove('showing'); boardEl.querySelectorAll('.win,.sc').forEach(c => c.classList.remove('win', 'sc')); }
+function clearMarks() { boardEl.classList.remove('showing'); boardEl.querySelectorAll('.win,.sc,.taken').forEach(c => c.classList.remove('win', 'sc', 'taken')); }
 const FILLER = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '4', '5', '6', '7', '8'];
 async function spinReels(next, fs) {
   clearMarks();
@@ -266,10 +291,66 @@ async function crewEnter(e) {
   for (const c of e.cells) {
     const r = (c / ROWS) | 0, y = c % ROWS;
     grid[r][y] = CREW_CODES[e.id]; cellEl(c).innerHTML = '';
-    setSticky(c, e.id, true); SFX.splash();
+    setSticky(c, e.id, e.mult, true); SFX.splash();
     await sleep(160);
   }
   await sleep(200);
+}
+
+/* jauge du pavillon : les drapeaux s'envolent de la grille vers la jauge ; une jauge pleine donne des spins gratuits */
+function paintMeter(n) {
+  $('flagMeter').querySelectorAll('.slot').forEach((el, i) => el.classList.toggle('on', i < n));
+}
+function flagLeft(left) { const el = $('flagLeft'); el.hidden = !(left > 0); el.innerHTML = `<b>${left}</b> ${T.flagLeftLab(left)}`; }
+function resetMeter() { paintMeter(0); flagLeft(0); }
+async function flagCollect(e) {
+  const meter = $('flagMeter'), slots = meter.querySelectorAll('.slot');
+  let fill = [...slots].filter(x => x.classList.contains('on')).length;
+  for (const c of e.cells) {
+    const from = cellEl(c).getBoundingClientRect(), to = (slots[Math.min(fill, slots.length - 1)] || meter).getBoundingClientRect();
+    const fly = document.createElement('div'); fly.className = 'flyflag'; fly.innerHTML = symSVG('W');
+    Object.assign(fly.style, { left: from.left + 'px', top: from.top + 'px', width: from.width + 'px', height: from.height + 'px' });
+    document.body.appendChild(fly); SFX.flag();
+    await new Promise(r => requestAnimationFrame(r));
+    Object.assign(fly.style, { left: to.left + 'px', top: to.top + 'px', width: to.width + 'px', height: to.height + 'px', opacity: '.6' });
+    cellEl(c).classList.add('taken');
+    await sleep(380); fly.remove();
+    fill++; paintMeter(Math.min(fill, slots.length));
+    if (fill >= CFG.FLAG_METER) { meter.classList.remove('full'); void meter.offsetWidth; meter.classList.add('full'); SFX.big(); await sleep(450); fill = 0; paintMeter(0); }
+  }
+  paintMeter(e.meter);
+  if (e.awarded > 0) { toast(T.flagAward(e.awarded)); flagLeft(e.left); await sleep(900); }
+}
+
+/* duel : deux wilds collants s'affrontent ; le perdant passe dans le camp du gagnant */
+async function duel(e) {
+  const [ca, ia, ma] = e.a, [cb, ib, mb] = e.b, win = e.winner === ca ? e.a : e.b;
+  const els = [stickyEls.get(ca), stickyEls.get(cb)];
+  els.forEach(el => el && el.classList.add('duel'));
+  SFX.duel();
+  await callout(`${crewSVG(ia)}<div style="text-align:center"><div class="n">${T.duel}</div><div class="x">x${ma} <small style="display:inline">${T.vs}</small> x${mb}</div><small>${T.crew[ia]} · ${T.crew[ib]}</small></div>${crewSVG(ib)}`, '#ffd60a', 1300);
+  els.forEach(el => el && el.classList.remove('duel'));
+  const w = stickyEls.get(win[0]); if (w) { w.classList.remove('champ'); void w.offsetWidth; w.classList.add('champ'); }
+  SFX.big();
+  const [c, id, m] = e.result;
+  updateSticky(c, id, m, 'flip');
+  grid[(c / ROWS) | 0][c % ROWS] = CREW_CODES[id];
+  showMsg(T.duelWin(T.crew[win[1]], win[2]));
+  await sleep(1000);
+}
+/* coffre : un Coffre s'ouvre et ajoute +1 au multiplicateur d'un wild collant */
+async function chestOpen(e) {
+  const ch = cellEl(e.from); if (ch) ch.classList.add('sc', 'open');
+  SFX.coin(); SFX.scatter();
+  await sleep(550);
+  const el = stickyEls.get(e.cell);
+  if (el) {
+    updateSticky(e.cell, +el.dataset.id, e.mult, 'boost');
+    const tag = document.createElement('span'); tag.className = 'plus'; tag.textContent = '+1'; el.appendChild(tag); setTimeout(() => tag.remove(), 1200);
+  }
+  showMsg(T.chestMsg(e.mult)); SFX.win();
+  await sleep(850);
+  if (ch) ch.classList.remove('sc', 'open');
 }
 
 /* ============ AFFICHAGE DES GAINS ============ */
@@ -320,26 +401,27 @@ function runFx() {
     requestAnimationFrame(f);
   })();
 }
-function bigWin(amount, b) {
-  const ratio = amount / b; if (ratio < TIERS[0].x) return Promise.resolve();
+function bigWin(amount, b, scale = 1, sub = '') {
+  const tiers = TIERS.map(t => ({ x: t.x * scale, label: t.label }));
+  const ratio = amount / b; if (ratio < tiers[0].x) return Promise.resolve();
   return new Promise(res => {
     const ov = document.createElement('div'); ov.className = 'bigwin';
-    ov.innerHTML = `<div><div class="tier"></div><div class="amt"></div><div class="hint">${T.skip}</div></div>`;
+    ov.innerHTML = `<div><div class="tier"></div><div class="amt"></div>${sub ? `<div class="sub">${sub}</div>` : ''}<div class="hint">${T.skip}</div></div>`;
     document.body.appendChild(ov); $('app').classList.add('shake'); setTimeout(() => $('app').classList.remove('shake'), 500);
     fxOn = true; runFx(); SFX.big();
-    const reached = TIERS.filter(t => ratio >= t.x).length, dur = (1500 + reached * 1200) * (turbo ? .6 : 1);
+    const reached = tiers.filter(t => ratio >= t.x).length, dur = (1500 + reached * 1200) * (turbo ? .6 : 1);
     const t0 = performance.now(); let ti0 = -1, finished = false, lastCoin = 0;
     const tierEl = ov.querySelector('.tier'), amtEl = ov.querySelector('.amt');
     function frame(now) {
       if (finished) return;
       const p = Math.min(1, (now - t0) / dur), cur = amount * (1 - Math.pow(1 - p, 2.2));
       amtEl.textContent = fmt(cur);
-      let ti = 0; TIERS.forEach((t, i) => { if (cur / b >= t.x) ti = i; });
-      if (ti !== ti0) { ti0 = ti; tierEl.textContent = TIERS[ti].label; tierEl.classList.remove('up'); void tierEl.offsetWidth; tierEl.classList.add('up'); if (ti > 0) SFX.big(); }
+      let ti = 0; tiers.forEach((t, i) => { if (cur / b >= t.x) ti = i; });
+      if (ti !== ti0) { ti0 = ti; tierEl.textContent = tiers[ti].label; tierEl.classList.remove('up'); void tierEl.offsetWidth; tierEl.classList.add('up'); if (ti > 0) SFX.big(); }
       if (now - lastCoin > 80) { SFX.coin(); lastCoin = now; }
       if (p < 1) requestAnimationFrame(frame); else end();
     }
-    function end() { if (finished) return; finished = true; amtEl.textContent = fmt(amount); tierEl.textContent = TIERS[reached - 1].label; setTimeout(close, 1500 * (turbo ? .6 : 1)); }
+    function end() { if (finished) return; finished = true; amtEl.textContent = fmt(amount); tierEl.textContent = tiers[reached - 1].label; setTimeout(close, 1500 * (turbo ? .6 : 1)); }
     function close() { if (!ov.isConnected) return; fxOn = false; ov.remove(); res(); }
     ov.onclick = () => { finished ? close() : end(); };
     requestAnimationFrame(frame);
@@ -358,24 +440,28 @@ function maxWinScreen(amount) {
 /* ============ LECTURE D'UNE PARTIE (événements) ============ */
 // Renvoie le gain total de la partie, en × la mise.
 async function playBook(events, b, mode) {
-  let final = 0, maxShown = false, hadBonus = false, before = 0;
+  let final = 0, maxShown = false, hadBonus = false, before = 0, bonusShown = false;
   showMsg(T.luck); showAmt(0); lastTotal = 0;
   for (const e of events) {
     switch (e.type) {
       case 'reveal':
-        if (e.gameType === 'basegame') { crewNow = -1; clearStickies(); }
+        if (e.gameType === 'basegame') { crewNow = -1; clearStickies(); resetMeter(); }
         setCrewBar(inFS ? fsCrew : null, -1);
         await spinReels(boardOf(e.board), e.gameType === 'freegame');
-        syncStickies(grid);
+        syncStickies(e.sticky);
         break;
       case 'crew': await crewEnter(e); break;
+      case 'duel': await duel(e); break;
+      case 'flagCollect': await flagCollect(e); break;
+      case 'flagSpin': flagLeft(e.left, e.number); showMsg(T.flagSpinMsg(e.number, e.left)); clearMarks(); break;
+      case 'chest': await chestOpen(e); break;
       case 'winInfo': await showWins(e, b); break;
       case 'scatters':
         boardEl.classList.add('showing'); e.cells.forEach(c => cellEl(c).classList.add('sc')); SFX.scatter(); await sleep(1100); break;
       case 'freeSpinTrigger': {
         hadBonus = true; inFS = true; before = lastTotal; document.body.classList.add('fs'); updateUI();
         fsCrew = e.crew; setCrewBar(e.crew, -1);
-        clearStickies(); for (const [c, id] of (e.sticky || [])) setSticky(c, id, true);
+        clearStickies(); for (const [c, id, m] of (e.sticky || [])) setSticky(c, id, m, true);
         $('fsInfo').hidden = false; $('fsLeft').textContent = e.count; $('fsWin').textContent = fmt(0);
         const roster = CFG.CREW.map(p => `<div class="${e.crew.includes(p.id) ? '' : 'off'}">${crewSVG(p.id)}<span><b>x${p.mult}</b>${T.crew[p.id]}</span></div>`).join('');
         await modal(`<div class="kicker">${mode === 'base' ? T.trig : T.modeName[mode]}</div><h2>${T.spins(e.count)}</h2><p>${T.intro}</p>${mode === 'superbonus' ? '<p><b>' + T.introSup + '</b></p>' : ''}<div class="crewgrid">${roster}</div>`, [[T.start, 1]]);
@@ -387,18 +473,22 @@ async function playBook(events, b, mode) {
         await sleep(400);
         const amt = (before + e.total) / 100 * b;          // gain du spin déclencheur compris
         lastTotal = before + e.total; showAmt(amt); $('fsWin').textContent = fmt(amt);
-        await modal(`<div class="kicker">${e.maxed ? T.maxed : T.over}</div><h2>${fmt(amt)}</h2><p>${T.inSpins(e.played)}</p>${e.topUp > 0 ? `<p class="fine">${T.minApplied}</p>` : ''}`, [[T.cont, 1]]);
+        // une seule annonce : les titres BIG WIN… se comparent à ce que le bonus a coûté (×10 pour un achat à 100× la mise)
+        const scale = Math.max(1, CFG.MODES[mode].cost / 10), sub = `${T.over} · ${T.inSpins(e.played)} · ${T.xBet(Math.round(amt / b * 10) / 10)}`;
+        if (!e.maxed && amt / b >= TIERS[0].x * scale) await bigWin(amt, b, scale, sub + (e.topUp > 0 ? '<br>' + T.minApplied : ''));
+        else if (!e.maxed) await modal(`<div class="kicker">${T.over}</div><h2>${fmt(amt)}</h2><p>${T.inSpins(e.played)} · ${T.xBet(Math.round(amt / b * 10) / 10)}</p>${e.topUp > 0 ? `<p class="fine">${T.minApplied}</p>` : ''}`, [[T.cont, 1]]);
+        bonusShown = true;
         inFS = false; crewNow = -1; fsCrew = null; document.body.classList.remove('fs'); $('fsInfo').hidden = true; setCrewBar(null, -1); updateUI();
         break;
       }
       case 'winCap': await maxWinScreen(e.amount / 100 * b); maxShown = true; break;
-      case 'finalWin': final = e.amount / 100; break;
+      case 'finalWin': final = e.amount / 100; flagLeft(0); break;
     }
   }
   clearMarks();
   showAmt(final * b);
   showMsg(final > 0 ? (hadBonus ? T.bonusDone : T.win) : T.nowin);
-  if (!maxShown && final > 0) await bigWin(final * b, b);
+  if (!maxShown && !bonusShown && final > 0) await bigWin(final * b, b);
   return final;
 }
 
@@ -595,6 +685,8 @@ function applyLang() {
   const tip = (id, t) => { const el = $(id); if (el) { el.title = t; el.setAttribute('aria-label', t); } };
   tip('rulesBtn', T.rulesTip); tip('betDown', T.dec); tip('betUp', T.inc); tip('spinBtn', T.spinAria); tip('autoBtn', T.autoTip); tip('turboBtn', T.turboTip); tip('buyBtn', T.buyTitle); tip('menuBtn', T.menuTip);
   paintMute(); paintMusic(); buildCrewBar();
+  $('flagMeter').innerHTML = `<span class="ml">${T.meterLab}</span>` + Array.from({ length: CFG.FLAG_METER }, () => `<span class="slot">${symSVG('W')}</span>`).join('') + `<span class="mh">${T.meterHint}</span>`;
+  $('flagMeter').title = T.meterHint;
 }
 function applyJurisdiction() {
   if (JUR.disabledTurbo) { $('turboBtn').style.visibility = 'hidden'; turbo = false; }
@@ -616,7 +708,7 @@ async function runReplay() {
   document.body.classList.add('replay');
   const amt = Number(Q.get('amount')), amount = amt > 0 && isFinite(amt) ? amt / 1e6 : 1;     // paramètre absent ou invalide : 1
   const mode = String(Q.get('mode') || 'base').toLowerCase();
-  BETS = [amount]; betIdx = 0; CURRENCY = Q.get('currency') || null; setTexts(); applyLang();
+  BETS = [amount]; betIdx = 0; CURRENCY = Q.get('currency') || null; setTexts(); applyLang(); updateUI();
   bootScreen(`<div class="spinner"></div><div>${T.loading}</div>`);
   let data;
   try { data = await Backend.replay(); } catch (err) { fatal(null, T.replayErr); return; }

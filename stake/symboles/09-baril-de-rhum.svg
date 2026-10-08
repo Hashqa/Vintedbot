@@ -1,0 +1,7 @@
+<svg width="512" height="512" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" ><defs><linearGradient id="br12" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6b3311"/><stop offset=".5" stop-color="#c47a3a"/><stop offset="1" stop-color="#5a2a0c"/></linearGradient></defs><ellipse cx="50" cy="91" rx="28" ry="4.5" fill="#000" opacity=".32"/>
+      <path d="M26 14 q24 -6 48 0 q8 36 0 72 q-24 6 -48 0 q-8 -36 0 -72z" fill="url(#br12)" stroke="#2a1405" stroke-width="2.5"/>
+      <path d="M38 12 q-5 38 0 76 M50 11 v78 M62 12 q5 38 0 76" stroke="#3b1a06" stroke-width="1.5" opacity=".6" fill="none"/>
+      <path d="M22 26 q28 -6 56 0 M20 74 q30 6 60 0" stroke="#9aa3b5" stroke-width="5" fill="none"/>
+      <path d="M22 26 q28 -6 56 0 M20 74 q30 6 60 0" stroke="#4a5266" stroke-width="1.5" fill="none"/>
+      <ellipse cx="50" cy="50" rx="13" ry="10" fill="#f3e2b5" stroke="#7a5a26" stroke-width="2"/>
+      <text x="50" y="55" font-family="Lilita One, sans-serif" font-size="13" text-anchor="middle" fill="#7a1d12">RUM</text></svg>

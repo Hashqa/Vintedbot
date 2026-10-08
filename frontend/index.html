@@ -46,6 +46,23 @@ header.top{grid-area:top;display:flex;align-items:center;gap:var(--gap);min-widt
 .crewbar .cm.off{opacity:.12}
 .crewbar .cm b{position:absolute;right:-4px;bottom:-2px;font-family:var(--display);font-weight:400;font-size:clamp(7px,1.6vh,12px);background:#16161f;border-radius:6px;padding:0 3px;border:1px solid var(--line)}
 body:not(.fs) .crewbar .cm{opacity:.55;filter:none}
+.toprow{height:var(--crH);width:100%;display:flex;align-items:center;justify-content:center;gap:clamp(6px,2vw,24px);position:relative}
+.toprow .crewbar{width:auto}
+/* jauge du pavillon (jeu de base) */
+.flagmeter{height:100%;display:flex;align-items:center;gap:clamp(3px,.8vmin,8px);padding:2px clamp(6px,1.2vmin,12px);border-radius:999px;background:var(--panel);border:1px solid var(--line)}
+.flagmeter .ml{font-size:clamp(7px,1.5vh,11px);color:var(--mute);text-transform:uppercase;letter-spacing:.08em}
+.flagmeter .mh{font-size:clamp(7px,1.5vh,11px);color:var(--gold);white-space:nowrap}
+.flagmeter .slot{height:88%;aspect-ratio:1;border-radius:8px;border:1px dashed rgba(255,214,120,.5);display:grid;place-items:center;opacity:.35;filter:grayscale(1)}
+.flagmeter .slot svg{width:90%;height:90%}
+.flagmeter .slot.on{opacity:1;filter:none;border-style:solid;background:rgba(255,200,61,.18)}
+.flagmeter.full{animation:champ .45s ease-out;box-shadow:0 0 18px 4px rgba(255,200,61,.7)}
+.flagleft{height:100%;display:flex;align-items:center;gap:4px;padding:0 10px;border-radius:999px;background:var(--gold);color:#2a1600;font-size:clamp(9px,1.8vh,13px);font-weight:800;white-space:nowrap}
+.flagleft b{font-family:var(--display);font-weight:400;font-size:clamp(12px,2.6vh,20px)}
+body.fs .flagmeter,body.fs .flagleft{display:none!important}
+.flyflag{position:fixed;z-index:50;pointer-events:none;transition:all .38s cubic-bezier(.4,.1,.3,1)}
+.flyflag svg{width:100%;height:100%}
+.cell.taken svg{opacity:.25}
+@media (max-aspect-ratio: 9/10){ .flagmeter .mh{display:none} }
 .board-wrap{position:relative;max-width:100%;width:min(calc((100vh - var(--topH) - var(--hudH) - var(--crH) - var(--msgH) - var(--gap)*6 - 10px) * 1.25), calc(100vw - var(--gap)*4), 900px);
   padding:clamp(3px,.9vmin,10px);border-radius:clamp(10px,2.4vmin,26px);background:linear-gradient(180deg,#a8692f,#5c2f10);box-shadow:0 0 0 2px #2b1405,0 10px 30px rgba(0,0,0,.5),inset 0 2px 0 rgba(255,255,255,.25)}
 .board{--bp:clamp(2px,.5vmin,5px);position:relative;aspect-ratio:5/4;max-width:100%;display:grid;grid-template-columns:repeat(5,1fr);gap:var(--bp);border-radius:clamp(7px,1.7vmin,18px);overflow:hidden;
@@ -65,6 +82,20 @@ body.fs .board{background:linear-gradient(180deg,#2e1460,#120a33)}
 .cell.sc svg{animation:pulse .5s ease-in-out infinite alternate}
 .cell .mult{position:absolute;right:4%;bottom:4%;font-family:var(--display);font-size:clamp(9px,3.2vmin,26px);line-height:1;color:#fff;background:#16161f;border-radius:999px;padding:.1em .35em;border:2px solid var(--cc,#ffc83d)}
 .cell.crew{animation:drop .45s cubic-bezier(.2,1.4,.5,1) both}
+/* duel, coffre, respin du pavillon */
+.cell.sticky.duel{animation:duelshake .18s linear infinite}
+.cell.sticky.duel::after{box-shadow:0 0 22px 6px rgba(255,214,10,.8)}
+@keyframes duelshake{25%{transform:translate(-3px,1px) rotate(-3deg)}75%{transform:translate(3px,-1px) rotate(3deg)}}
+.cell.sticky.champ{animation:champ .7s ease-out}
+@keyframes champ{30%{transform:scale(1.22)}}
+.cell.sticky.flip{animation:flip .55s ease-in-out}
+@keyframes flip{50%{transform:rotateY(90deg) scale(.9)}}
+.cell.sticky.boost{animation:champ .6s ease-out}
+.cell.sticky .plus{position:absolute;left:50%;top:10%;transform:translateX(-50%);font-family:var(--display);font-size:clamp(14px,4vmin,30px);color:var(--gold);text-shadow:0 2px 0 #5a2a00;animation:plusup 1.2s ease-out forwards;pointer-events:none}
+@keyframes plusup{to{transform:translate(-50%,-90%);opacity:0}}
+.cell.open svg{animation:open .5s ease-in-out infinite alternate;filter:drop-shadow(0 0 10px #ffd60a)}
+@keyframes open{to{transform:scale(1.18) rotate(-4deg)}}
+.cell.sticky.flag::after{border-radius:14%;box-shadow:0 0 16px 3px rgba(255,200,61,.55)}
 @keyframes drop{from{transform:translateY(-120%) scale(.6);opacity:0}to{transform:none;opacity:1}}
 @keyframes pulse{from{transform:scale(1)}to{transform:scale(1.1)}}
 .msgline{height:var(--msgH);width:100%;display:flex;align-items:center;justify-content:center;position:relative}
@@ -123,7 +154,7 @@ body.fs .msgline .msg{visibility:hidden}
 }
 /* très petite hauteur (Popout S 400×225) : on retire le superflu */
 @media (max-height:300px){
-  header.top,.crewbar,.msgline .msg,.lab small{display:none!important}
+  header.top,.toprow,.msgline .msg,.lab small{display:none!important}
   .app{--topH:0px;--crH:0px;--msgH:0px;grid-template-rows:0 minmax(0,1fr) var(--hudH);row-gap:3px}
   body.fs .msgline{height:16px}
 }
@@ -184,6 +215,7 @@ table.pay svg{width:26px;height:26px;vertical-align:middle}
 .bigwin .tier.up{animation:pop2 .4s cubic-bezier(.2,1.6,.5,1)}
 @keyframes pop2{from{transform:scale(.4)}}
 .bigwin .amt{font-family:var(--display);font-size:clamp(22px,7vmin,64px)}
+.bigwin .sub{color:#fff;font-size:clamp(11px,2.4vmin,17px);margin-top:6px;opacity:.9}
 .bigwin .hint{color:var(--mute);font-size:clamp(10px,2vmin,14px);margin-top:10px}
 .toast{position:fixed;left:50%;top:18%;transform:translateX(-50%);z-index:80;background:rgba(8,6,24,.94);border:2px solid var(--gold);border-radius:999px;padding:8px 20px;font-family:var(--display);font-size:clamp(14px,3.4vmin,26px);animation:pop3 .3s}
 @keyframes pop3{from{opacity:0;transform:translate(-50%,-20px)}}
@@ -206,7 +238,7 @@ canvas.fx{position:fixed;inset:0;pointer-events:none;z-index:75}
 
   <main class="machine">
     <div class="rp-banner" id="rpBanner" hidden></div>
-    <div class="crewbar" id="crewbar"></div>
+    <div class="toprow"><div class="crewbar" id="crewbar"></div><div class="flagmeter" id="flagMeter"></div><div class="flagleft" id="flagLeft" hidden></div></div>
     <div class="board-wrap" id="boardWrap"><div class="board" id="board"></div></div>
     <div class="msgline"><span class="msg" id="msg"></span>
       <div class="fsinfo" id="fsInfo" hidden><span><span class="lab" id="tFsLeft">Free spins</span><span class="val" id="fsLeft">0</span></span><span><span class="lab" id="tFsWin">Bonus win</span><span class="val" id="fsWin">0</span></span></div>

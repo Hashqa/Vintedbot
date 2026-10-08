@@ -1,0 +1,10 @@
+<svg width="512" height="512" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" ><defs><radialGradient id="cr14" cx=".5" cy=".4" r=".7"><stop offset="0" stop-color="#3a86ff" stop-opacity=".95"/><stop offset="1" stop-color="#0a1230"/></radialGradient><clipPath id="cr14c"><circle cx="50" cy="50" r="45"/></clipPath></defs>
+      <circle cx="50" cy="50" r="47" fill="url(#cr14)" stroke="#3a86ff" stroke-width="4"/>
+      <g clip-path="url(#cr14c)"><path d="M22 100 q4 -18 28 -20 q24 2 28 20z" fill="#f4f1e6"/><path d="M26 92 h48 M24 98 h52" stroke="#1f4fa8" stroke-width="4"/>
+      <ellipse cx="50" cy="56" rx="22" ry="25" fill="#f2c194" stroke="#c98a5b" stroke-width="2"/><path d="M30 60 q2 22 20 24 q18 -2 20 -24 q-6 10 -20 10 q-14 0 -20 -10z" fill="#8a6a4a" opacity=".55"/>
+      <circle cx="41" cy="53" r="3.2" fill="#1d1d2b"/><circle cx="59" cy="53" r="3.2" fill="#1d1d2b"/><circle cx="42" cy="52" r="1" fill="#fff"/><circle cx="60" cy="52" r="1" fill="#fff"/><path d="M37 46 l9 1 M63 46 l-9 1" stroke="#4a2e16" stroke-width="3" stroke-linecap="round"/>
+      <path d="M43 68 q7 4 14 0" stroke="#7a2b12" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M48 58 q2 4 4 0" stroke="#c98a5b" stroke-width="2" fill="none"/>
+      <circle cx="72" cy="62" r="3" fill="none" stroke="#ffc83d" stroke-width="2"/>
+      <path d="M26 44 q2 -24 24 -24 q22 0 24 24z" fill="#1f4fa8" stroke="#0d2f73" stroke-width="2"/>
+      <rect x="24" y="40" width="52" height="9" rx="4" fill="#2b6fd6" stroke="#0d2f73" stroke-width="2"/><path d="M30 44 h40" stroke="#9cc3ff" stroke-width="1.5" stroke-dasharray="3 3"/></g>
+      </svg>

@@ -47,14 +47,60 @@
       <path d="M22 50 L50 45 L78 50 L50 55Z" fill="#6b6b80" opacity=".6"/><circle cx="50" cy="50" r="4" fill="#ffc83d" stroke="#5e3d07" stroke-width="1.5"/>
       <text x="50" y="20" font-family="Lilita One, sans-serif" font-size="9" text-anchor="middle" fill="#5e3d07">N</text>`);
   }
-  // ---------- symboles bas : lettres sur un écu
-  const LOW = { 4: ['A', '#e63946', '#7a0f19'], 5: ['K', '#3a86ff', '#0d2f73'], 6: ['Q', '#b15cff', '#4a137a'], 7: ['J', '#2ecc71', '#0e5a2c'], 8: ['10', '#ff9f1c', '#7a4300'] };
-  function low(code) {
-    const [t, c1, c2] = LOW[code], g = gid('lw');
-    return svg(`<defs><linearGradient id="${g}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient></defs>
-      <ellipse cx="50" cy="91" rx="26" ry="4" fill="#000" opacity=".3"/>
-      <text x="50" y="${t.length > 1 ? 72 : 76}" font-family="Lilita One, sans-serif" font-size="${t.length > 1 ? 54 : 66}" text-anchor="middle" fill="url(#${g})" stroke="#fff6d8" stroke-width="5" paint-order="stroke" letter-spacing="-3">${t}</text>`);
+  // ---------- symboles bas : crâne aux épées, ancre, canon, longue-vue, baril de rhum
+  const shadow = w => `<ellipse cx="50" cy="91" rx="${w}" ry="4.5" fill="#000" opacity=".32"/>`;
+  function skull() {    // 4 · crâne et épées croisées
+    const g = gid('sk');
+    return svg(`<defs><linearGradient id="${g}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e9eef7"/><stop offset="1" stop-color="#8f9bb3"/></linearGradient></defs>${shadow(30)}
+      <path d="M16 84 L80 20" stroke="#cfd6e4" stroke-width="6" stroke-linecap="round"/><path d="M84 84 L20 20" stroke="#cfd6e4" stroke-width="6" stroke-linecap="round"/>
+      <path d="M16 84 L80 20 M84 84 L20 20" stroke="#5c6a85" stroke-width="1.5" fill="none"/>
+      <rect x="20" y="70" width="14" height="6" rx="2" transform="rotate(-45 27 73)" fill="#c8102e"/><rect x="66" y="70" width="14" height="6" rx="2" transform="rotate(45 73 73)" fill="#c8102e"/>
+      <circle cx="14" cy="86" r="4" fill="#ffc83d"/><circle cx="86" cy="86" r="4" fill="#ffc83d"/>
+      <path d="M28 46 q0 -26 22 -26 q22 0 22 26 q0 12 -8 16 v10 h-28 v-10 q-8 -4 -8 -16z" fill="url(#${g})" stroke="#3a4560" stroke-width="2.5"/>
+      <ellipse cx="41" cy="47" rx="6" ry="7" fill="#1d1d2b"/><ellipse cx="59" cy="47" rx="6" ry="7" fill="#1d1d2b"/><path d="M50 55 l-4 7 h8z" fill="#1d1d2b"/>
+      <path d="M40 72 v-6 M46 72 v-6 M54 72 v-6 M60 72 v-6" stroke="#3a4560" stroke-width="2"/>`);
   }
+  function anchor() {   // 5 · ancre
+    const g = gid('an');
+    return svg(`<defs><linearGradient id="${g}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9fd3ff"/><stop offset=".5" stop-color="#3a86ff"/><stop offset="1" stop-color="#173a8a"/></linearGradient></defs>${shadow(28)}
+      <circle cx="50" cy="16" r="8" fill="none" stroke="url(#${g})" stroke-width="6"/>
+      <rect x="45" y="22" width="10" height="56" rx="4" fill="url(#${g})" stroke="#0d2050" stroke-width="2"/>
+      <rect x="30" y="30" width="40" height="8" rx="4" fill="url(#${g})" stroke="#0d2050" stroke-width="2"/>
+      <path d="M18 56 q4 26 32 28 q28 -2 32 -28" fill="none" stroke="url(#${g})" stroke-width="8" stroke-linecap="round"/>
+      <path d="M10 60 l8 -10 l8 10z M74 60 l8 -10 l8 10z" fill="url(#${g})" stroke="#0d2050" stroke-width="2" stroke-linejoin="round"/>`);
+  }
+  function cannon() {   // 6 · canon
+    const g = gid('cn');
+    return svg(`<defs><linearGradient id="${g}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7d8597"/><stop offset=".45" stop-color="#3d4352"/><stop offset="1" stop-color="#16181f"/></linearGradient></defs>${shadow(34)}
+      <path d="M14 40 L80 22 q8 -2 9 6 l3 14 q1 8 -7 9 L20 66 q-8 2 -10 -6 l-3 -12 q-1 -6 7 -8z" fill="url(#${g})" stroke="#0b0c10" stroke-width="2.5"/>
+      <ellipse cx="88" cy="36" rx="5" ry="10" transform="rotate(-14 88 36)" fill="#0b0c10"/>
+      <path d="M30 37 l5 22 M58 29 l5 22" stroke="#ffc83d" stroke-width="3"/>
+      <path d="M8 52 q-6 -2 -6 -8" stroke="#c47a00" stroke-width="3" fill="none"/>
+      <circle cx="36" cy="72" r="15" fill="#8a5a2b" stroke="#3b1a06" stroke-width="3"/><circle cx="36" cy="72" r="4" fill="#ffc83d"/>
+      <path d="M36 57 v30 M21 72 h30 M25 61 l22 22 M47 61 l-22 22" stroke="#3b1a06" stroke-width="2"/>`);
+  }
+  function spyglass() { // 7 · longue-vue
+    const g = gid('sg');
+    return svg(`<defs><linearGradient id="${g}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff2a8"/><stop offset=".5" stop-color="#e0a020"/><stop offset="1" stop-color="#7a4a00"/></linearGradient></defs>${shadow(32)}
+      <g transform="rotate(-30 50 50)">
+        <rect x="8" y="42" width="24" height="16" rx="3" fill="#6b3a1a" stroke="#2a1405" stroke-width="2"/>
+        <rect x="30" y="39" width="28" height="22" rx="3" fill="url(#${g})" stroke="#5a3400" stroke-width="2"/>
+        <rect x="56" y="36" width="30" height="28" rx="3" fill="url(#${g})" stroke="#5a3400" stroke-width="2"/>
+        <rect x="84" y="33" width="8" height="34" rx="2" fill="#5a3400"/><ellipse cx="92" cy="50" rx="3" ry="14" fill="#9be7ff" stroke="#1f6fff" stroke-width="1.5"/>
+        <path d="M60 40 v20 M34 42 v16" stroke="#fff6c2" stroke-width="2" opacity=".7"/>
+      </g>`);
+  }
+  function barrel() {   // 8 · baril de rhum
+    const g = gid('br');
+    return svg(`<defs><linearGradient id="${g}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6b3311"/><stop offset=".5" stop-color="#c47a3a"/><stop offset="1" stop-color="#5a2a0c"/></linearGradient></defs>${shadow(28)}
+      <path d="M26 14 q24 -6 48 0 q8 36 0 72 q-24 6 -48 0 q-8 -36 0 -72z" fill="url(#${g})" stroke="#2a1405" stroke-width="2.5"/>
+      <path d="M38 12 q-5 38 0 76 M50 11 v78 M62 12 q5 38 0 76" stroke="#3b1a06" stroke-width="1.5" opacity=".6" fill="none"/>
+      <path d="M22 26 q28 -6 56 0 M20 74 q30 6 60 0" stroke="#9aa3b5" stroke-width="5" fill="none"/>
+      <path d="M22 26 q28 -6 56 0 M20 74 q30 6 60 0" stroke="#4a5266" stroke-width="1.5" fill="none"/>
+      <ellipse cx="50" cy="50" rx="13" ry="10" fill="#f3e2b5" stroke="#7a5a26" stroke-width="2"/>
+      <text x="50" y="55" font-family="Lilita One, sans-serif" font-size="13" text-anchor="middle" fill="#7a1d12">RUM</text>`);
+  }
+  const LOW = { 4: skull, 5: anchor, 6: cannon, 7: spyglass, 8: barrel };
   function wild() {
     return svg(`<ellipse cx="50" cy="91" rx="32" ry="5" fill="#000" opacity=".35"/>
       <rect x="14" y="8" width="5" height="84" rx="2" fill="#8a5a2b" stroke="#3b1a06" stroke-width="1.5"/>
@@ -119,7 +165,7 @@
     switch (code) {
       case '0': return chest(); case '1': return rum(); case '2': return map(); case '3': return compass();
       case 'W': return wild(); case 'S': return scatter();
-      default: return low(+code);
+      default: return LOW[+code]();
     }
   }
   root.JollyArt = { symSVG, crewSVG, CREW_COLORS };

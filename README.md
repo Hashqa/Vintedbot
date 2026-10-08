@@ -7,14 +7,16 @@ Le dépôt contient tout ce que demande Stake : le front-end, les fichiers math�
 ## Le jeu
 
 - **Gains en façons** : des symboles identiques sur 3, 4 ou 5 rouleaux voisins, en partant de la gauche, à n'importe quelle position. Chaque combinaison d'une position par rouleau est une façon (jusqu'à 1024).
-- **Wild** (drapeau pirate) sur les rouleaux 2 à 5 en jeu de base.
+- **Symboles** : Coffre, Bouteille de rhum, Carte, Boussole (hauts) ; Crâne et épées, Ancre, Canon, Longue-vue, Baril de rhum (bas).
+- **Drapeau Wild** sur les rouleaux 2 à 5 en jeu de base.
+- **Jauge du pavillon** : en jeu de base, chaque drapeau Wild est ramassé dans la jauge au-dessus des rouleaux. 2 drapeaux = **2 spins gratuits**, joués tout de suite (sans symbole Bonus) ; les drapeaux de ces spins remplissent encore la jauge. Environ 1 mise sur 5. La jauge ne dure que le temps de la mise : Stake impose des jeux sans état, rien n'est gardé d'une mise à l'autre.
 - **Free spins** : 3, 4 ou 5 symboles Bonus donnent 8, 10 ou 12 free spins. 3 Bonus pendant le bonus ajoutent 3 spins, et les wilds déjà posés restent.
 - **Gain minimum d'un bonus** : 10 fois la mise. Si le bonus se termine en dessous, la différence est ajoutée.
 - **Gain maximum** : 10 000 fois la mise, dans chaque mode.
 
 ### Le bonus de l'équipage (wilds collants)
 
-À chaque free spin, un personnage peut monter à bord (environ 4 spins sur 10). Il pose un wild sur une position libre des rouleaux 2 à 5. **Ce wild ne repart plus** : il reste jusqu'à la fin du bonus et garde le multiplicateur de son personnage. Comme les wilds s'accumulent, les multiplicateurs restent volontairement petits (x2 à x5), et plus un personnage multiplie, plus il est rare.
+À chaque free spin, un personnage peut monter à bord (environ 4 free spins sur 10). Il pose un wild sur une position libre des rouleaux 2 à 5. **Ce wild ne repart plus** : il reste jusqu'à la fin du bonus et garde le multiplicateur de son personnage. Comme les wilds s'accumulent, les multiplicateurs restent volontairement petits (x2 à x5), et plus un personnage multiplie, plus il est rare.
 
 | Personnage | Multiplicateur de son wild | Chance quand un personnage monte à bord (Bonus) | Superbonus |
 |---|---|---|---|
@@ -25,11 +27,17 @@ Le dépôt contient tout ce que demande Stake : le front-end, les fichiers math�
 
 Si une façon passe par plusieurs wilds de l'équipage, leurs multiplicateurs s'additionnent (x2 + x4 = x6). Une façon sans wild de l'équipage compte x1.
 
+### Duels et coffres (pendant les free spins)
+
+- **Duel** : sur environ 30 % des free spins, deux wilds collants de personnages différents s'affrontent. Celui qui a le plus gros multiplicateur gagne 65 % du temps. Le perdant change de camp : son wild prend le personnage et le multiplicateur du gagnant. Environ un duel par bonus.
+- **Coffre** : un Coffre qui tombe peut s'ouvrir (35 %) et ajoute +1 au multiplicateur d'un wild collant, jusqu'à x10. Environ 1,6 coffre ouvert par bonus.
+- **Fin de bonus** : une seule annonce. Les titres BIG WIN… se comparent à ce que le bonus a coûté (un bonus acheté 100 fois la mise doit rapporter au moins 200 fois la mise pour un BIG WIN).
+
 ### Modes de jeu
 
 | Mode | Nom côté serveur | Coût | Contenu |
 |---|---|---|---|
-| Base | `base` | 1 × la mise | bonus naturel environ 1 spin sur 260 |
+| Base | `base` | 1 × la mise | bonus naturel environ 1 spin sur 225 |
 | Bonus | `bonus` | 100 × la mise | 8 free spins ou plus, tout l'équipage |
 | Superbonus | `superbonus` | 150 × la mise | 8 free spins ou plus, équipage d'élite seulement (Canonnier x4 et Capitaine x5) |
 
@@ -60,12 +68,14 @@ stake/
   tile-3x4.png            tuile 1200×1600
   cover-16x9.png          couverture 1920×1080
   tile-layers/            calques pour l'éditeur de tuile du Studio : fonds seuls, personnages sur fond transparent
+  symboles/               chaque symbole et personnage en PNG 512×512 (fond transparent) et en SVG modifiable, + planche.png
   a-envoyer-sur-stake/    jolly-wilds-frontend.zip et jolly-wilds-math.zip
 tools/
   simulate.js             simulateur (retour au joueur, part de chaque personnage)
   mock-rgs.js             faux serveur Stake pour tester en local
   verify_stake.py         contrôles officiels du Math SDK de Stake
   covers.html, render-covers.js   tuile et couverture
+  export-assets.js        exporte les symboles et personnages (stake/symboles/)
   package.py              fabrique les deux zips
 ```
 
@@ -75,8 +85,8 @@ Les trois modes passent les contrôles officiels du Math SDK de Stake Engine (`u
 
 | Mode | Retour au joueur | Gain max | etl40b | etl10k |
 |---|---|---|---|---|
-| base | 96,20 % | 10 000 × | 0,34 | 0,002 |
-| bonus | 96,20 % | 10 000 × | 0,51 | 0,15 |
+| base | 96,20 % | 10 000 × | 0,39 | 0,002 |
+| bonus | 96,20 % | 10 000 × | 0,15 | 0,15 |
 | superbonus | 96,20 % | 10 000 × | 0,15 | 0,15 |
 
 - Paiements entiers en centièmes de mise, multiples de 10 (donc par paliers de 0,1 × la mise) ; poids entiers ; livres identiques aux tables.
