@@ -1,8 +1,14 @@
-<svg width="512" height="512" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" ><defs><linearGradient id="sg11" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff2a8"/><stop offset=".5" stop-color="#e0a020"/><stop offset="1" stop-color="#7a4a00"/></linearGradient></defs><ellipse cx="50" cy="91" rx="32" ry="4.5" fill="#000" opacity=".32"/>
-      <g transform="rotate(-30 50 50)">
-        <rect x="8" y="42" width="24" height="16" rx="3" fill="#6b3a1a" stroke="#2a1405" stroke-width="2"/>
-        <rect x="30" y="39" width="28" height="22" rx="3" fill="url(#sg11)" stroke="#5a3400" stroke-width="2"/>
-        <rect x="56" y="36" width="30" height="28" rx="3" fill="url(#sg11)" stroke="#5a3400" stroke-width="2"/>
-        <rect x="84" y="33" width="8" height="34" rx="2" fill="#5a3400"/><ellipse cx="92" cy="50" rx="3" ry="14" fill="#9be7ff" stroke="#1f6fff" stroke-width="1.5"/>
-        <path d="M60 40 v20 M34 42 v16" stroke="#fff6c2" stroke-width="2" opacity=".7"/>
-      </g></svg>
+<svg width="512" height="512" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" ><defs><linearGradient id="sg12g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff6c2"/><stop offset=".35" stop-color="#ffd24a"/><stop offset=".7" stop-color="#e09a12"/><stop offset="1" stop-color="#8a5300"/></linearGradient><linearGradient id="sg12l" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9a5a2a"/><stop offset="1" stop-color="#4a220a"/></linearGradient>
+      <radialGradient id="sg12e" cx=".35" cy=".35" r=".7"><stop offset="0" stop-color="#e6fbff"/><stop offset=".5" stop-color="#5ac8ff"/><stop offset="1" stop-color="#1f4fa8"/></radialGradient></defs>
+      <ellipse cx="50" cy="92" rx="32" ry="4.5" fill="#000" opacity=".32"/>
+      <g transform="rotate(-28 50 50)">
+        <rect x="6" y="41" width="26" height="18" rx="4" fill="url(#sg12l)" stroke="#2a1405" stroke-width="2"/><path d="M10 45 h18 M10 50 h18 M10 55 h18" stroke="#2a1405" stroke-width="1" opacity=".5"/>
+        <g class="a-tube">
+          <rect x="30" y="38" width="28" height="24" rx="3" fill="url(#sg12g)" stroke="#5a3400" stroke-width="2"/><rect x="30" y="38" width="5" height="24" fill="#b07a10" opacity=".6"/>
+          <rect x="56" y="35" width="30" height="30" rx="3" fill="url(#sg12g)" stroke="#5a3400" stroke-width="2"/><rect x="56" y="35" width="5" height="30" fill="#b07a10" opacity=".6"/>
+          <rect x="84" y="32" width="8" height="36" rx="2" fill="#7a4a00" stroke="#3b2200" stroke-width="1.5"/>
+          <ellipse cx="92" cy="50" rx="3.5" ry="15" fill="url(#sg12e)" stroke="#123a8a" stroke-width="1.5"/>
+          <path class="a-glint" d="M90 40 v20" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>
+          <path d="M38 41 h16 M64 38 h18" stroke="#fffbe0" stroke-width="2" stroke-linecap="round" opacity=".8"/>
+        </g>
+      </g><path class="a-spark" opacity="0" style="animation-delay:0s" d="M82 12 Q83.08 16.92 88 18 Q83.08 19.08 82 24 Q80.92 19.08 76 18 Q80.92 16.92 82 12Z" fill="#fffbe0"/></svg>

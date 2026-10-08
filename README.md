@@ -9,6 +9,7 @@ Le dépôt contient tout ce que demande Stake : le front-end, les fichiers math�
 - **Gains en façons** : des symboles identiques sur 3, 4 ou 5 rouleaux voisins, en partant de la gauche, à n'importe quelle position. Chaque combinaison d'une position par rouleau est une façon (jusqu'à 1024).
 - **Symboles** : Coffre, Bouteille de rhum, Carte, Boussole (hauts) ; Crâne et épées, Ancre, Canon, Longue-vue, Baril de rhum (bas).
 - **Drapeau Wild** sur les rouleaux 2 à 5 en jeu de base.
+- **Animations** : au repos, le drapeau flotte, les personnages clignent des yeux et la pièce Bonus brille. Sur un gain, chaque symbole a son animation : le coffre s'ouvre, la bouteille tangue, le chemin de la carte avance, l'aiguille de la boussole tourne, les épées du crâne s'entrechoquent, l'ancre se balance, le canon tire, la longue-vue s'allonge, le baril goutte, la pièce Bonus se retourne. Elles se coupent si le joueur a demandé moins d'animations dans son système.
 - **Jauge du pavillon** : en jeu de base, chaque drapeau Wild est ramassé dans la jauge au-dessus des rouleaux. 2 drapeaux = **2 spins gratuits**, joués tout de suite (sans symbole Bonus) ; les drapeaux de ces spins remplissent encore la jauge. Environ 1 mise sur 5. La jauge ne dure que le temps de la mise : Stake impose des jeux sans état, rien n'est gardé d'une mise à l'autre.
 - **Free spins** : 3, 4 ou 5 symboles Bonus donnent 8, 10 ou 12 free spins. 3 Bonus pendant le bonus ajoutent 3 spins, et les wilds déjà posés restent.
 - **Gain minimum d'un bonus** : 10 fois la mise. Si le bonus se termine en dessous, la différence est ajoutée.
@@ -57,7 +58,7 @@ La disposition reprend celle de l'interface de référence de Stake (kit `web-sd
 frontend/                 le jeu, à envoyer sur Stake (index.html à la racine)
   index.html              mise en page et styles
   app.js                  logique : serveur Stake, animations, rejeu, textes EN/FR
-  art.js                  symboles et personnages dessinés en SVG (aucune image externe)
+  art.js                  symboles et personnages dessinés en SVG, avec leurs animations (aucune image externe)
   engine.js               moteur du jeu (partagé avec le générateur mathématique)
   theme/fonts/            polices embarquées (licence SIL OFL)
 math/

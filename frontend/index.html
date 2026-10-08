@@ -98,6 +98,70 @@ body.fs .board{background:linear-gradient(180deg,#2e1460,#120a33)}
 .cell.sticky.flag::after{border-radius:14%;box-shadow:0 0 16px 3px rgba(255,200,61,.55)}
 @keyframes drop{from{transform:translateY(-120%) scale(.6);opacity:0}to{transform:none;opacity:1}}
 @keyframes pulse{from{transform:scale(1)}to{transform:scale(1.1)}}
+/* ===== animations des symboles (classes a-… posées dans frontend/art.js) ===== */
+svg [class^="a-"],svg [class*=" a-"]{transform-box:fill-box}
+/* au repos */
+.a-spark,.a-glow,.a-flash,.a-smoke,.a-drip,.a-eyes{opacity:0}
+.a-cloth{transform-origin:0% 50%;animation:cloth 2.4s ease-in-out infinite}
+@keyframes cloth{50%{transform:skewY(-4deg) scaleX(.96)}}
+.a-blink{transform-origin:50% 0%;transform:scaleY(0);animation:blink 4.6s infinite}
+@keyframes blink{0%,93%,100%{transform:scaleY(0)}96%{transform:scaleY(1)}}
+.a-bob{animation:bob 3.2s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(1.6px)}}
+.a-wing{transform-origin:0% 0%;animation:wing 2.2s ease-in-out infinite}
+@keyframes wing{50%{transform:rotate(-6deg)}}
+.a-rays{transform-origin:50% 50%;animation:rays 18s linear infinite}
+@keyframes rays{to{transform:rotate(360deg)}}
+.a-shine{animation:shine 3.4s ease-in-out infinite}
+@keyframes shine{50%{opacity:.25}}
+.a-needle{transform-origin:50% 50%;animation:needle 3s ease-in-out infinite}
+@keyframes needle{25%{transform:rotate(7deg)}75%{transform:rotate(-7deg)}}
+.a-liquid{animation:slosh 3s ease-in-out infinite}
+@keyframes slosh{50%{transform:translateX(-6px)}}
+/* sur un gain */
+.cell.win .a-spark{transform-origin:50% 50%;animation:spark 1.1s ease-in-out infinite}
+@keyframes spark{0%,100%{opacity:0;transform:scale(.2) rotate(0)}50%{opacity:1;transform:scale(1) rotate(45deg)}}
+.cell.win .a-lid{transform-origin:50% 100%;animation:lid .9s ease-in-out infinite alternate}
+@keyframes lid{to{transform:translateY(-7px) rotate(-7deg)}}
+.cell.win .a-glow{animation:glow .9s ease-in-out infinite alternate}
+@keyframes glow{to{opacity:1}}
+.cell.win .a-coins{animation:coins .45s ease-in-out infinite alternate}
+@keyframes coins{to{transform:translateY(-4px)}}
+.cell.win .a-tilt{transform-origin:50% 100%;animation:tilt .7s ease-in-out infinite alternate}
+@keyframes tilt{from{transform:rotate(-8deg)}to{transform:rotate(8deg)}}
+.cell.win .a-liquid{animation:slosh .35s ease-in-out infinite alternate}
+.cell.win .a-path{animation:path .8s linear infinite}
+@keyframes path{to{stroke-dashoffset:-16}}
+.cell.win .a-x{transform-origin:50% 50%;animation:xpulse .5s ease-in-out infinite alternate}
+@keyframes xpulse{to{transform:scale(1.3) rotate(8deg)}}
+.cell.win .a-needle{animation:spinfull 1s cubic-bezier(.4,.1,.3,1) infinite}
+@keyframes spinfull{to{transform:rotate(360deg)}}
+.cell.win .a-eyes{animation:glow .4s ease-in-out infinite alternate}
+.cell.win .a-swl{transform-origin:50% 50%;animation:clashl .5s ease-in-out infinite alternate}
+.cell.win .a-swr{transform-origin:50% 50%;animation:clashr .5s ease-in-out infinite alternate}
+@keyframes clashl{to{transform:rotate(-9deg)}}
+@keyframes clashr{to{transform:rotate(9deg)}}
+.cell.win .a-swing{transform-origin:50% 0%;animation:swing .8s ease-in-out infinite alternate}
+@keyframes swing{from{transform:rotate(-12deg)}to{transform:rotate(12deg)}}
+.cell.win .a-recoil{animation:recoil 1s ease-out infinite}
+@keyframes recoil{0%,100%{transform:none}8%{transform:translate(-5px,2px)}}
+.cell.win .a-flash{transform-origin:50% 50%;animation:flash 1s ease-out infinite}
+@keyframes flash{0%{opacity:1;transform:scale(.4)}18%{opacity:1;transform:scale(1.4)}35%,100%{opacity:0}}
+.cell.win .a-smoke{animation:smoke 1s ease-out infinite}
+@keyframes smoke{0%,10%{opacity:0;transform:none}30%{opacity:.9}100%{opacity:0;transform:translate(6px,-10px) scale(1.6)}}
+.cell.win .a-tube{animation:tube .7s ease-in-out infinite alternate}
+@keyframes tube{to{transform:translateX(6px)}}
+.cell.win .a-glint{animation:glow .35s ease-in-out infinite alternate}
+.cell.win .a-wobble{transform-origin:50% 100%;animation:tilt .45s ease-in-out infinite alternate}
+.cell.win .a-drip{animation:drip .9s ease-in infinite}
+@keyframes drip{0%{opacity:1;transform:none}100%{opacity:0;transform:translateY(9px)}}
+.cell.win .a-spin,.cell.sc .a-spin{transform-origin:50% 50%;animation:coin 1.1s ease-in-out infinite}
+@keyframes coin{50%{transform:scaleX(-1)}}
+.cell.win .a-cloth{animation-duration:.8s}
+.cell.win .a-bob{animation:hop .5s ease-in-out infinite alternate}
+@keyframes hop{to{transform:translateY(-3px)}}
+@media (prefers-reduced-motion: reduce){ svg [class^="a-"],svg [class*=" a-"]{animation:none!important} .a-blink{transform:scaleY(0)} }
+
 .msgline{height:var(--msgH);width:100%;display:flex;align-items:center;justify-content:center;position:relative}
 .msgline .msg{font-size:clamp(9px,2vh,15px);color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .fsinfo{position:absolute;inset:0;display:flex;justify-content:center;gap:clamp(8px,3vw,40px);align-items:center;border-radius:999px;background:rgba(30,10,60,.92);border:1px solid rgba(199,125,255,.5);margin:0 auto;max-width:520px}

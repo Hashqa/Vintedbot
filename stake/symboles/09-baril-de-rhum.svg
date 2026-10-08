@@ -1,7 +1,15 @@
-<svg width="512" height="512" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" ><defs><linearGradient id="br12" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6b3311"/><stop offset=".5" stop-color="#c47a3a"/><stop offset="1" stop-color="#5a2a0c"/></linearGradient></defs><ellipse cx="50" cy="91" rx="28" ry="4.5" fill="#000" opacity=".32"/>
-      <path d="M26 14 q24 -6 48 0 q8 36 0 72 q-24 6 -48 0 q-8 -36 0 -72z" fill="url(#br12)" stroke="#2a1405" stroke-width="2.5"/>
-      <path d="M38 12 q-5 38 0 76 M50 11 v78 M62 12 q5 38 0 76" stroke="#3b1a06" stroke-width="1.5" opacity=".6" fill="none"/>
-      <path d="M22 26 q28 -6 56 0 M20 74 q30 6 60 0" stroke="#9aa3b5" stroke-width="5" fill="none"/>
-      <path d="M22 26 q28 -6 56 0 M20 74 q30 6 60 0" stroke="#4a5266" stroke-width="1.5" fill="none"/>
-      <ellipse cx="50" cy="50" rx="13" ry="10" fill="#f3e2b5" stroke="#7a5a26" stroke-width="2"/>
-      <text x="50" y="55" font-family="Lilita One, sans-serif" font-size="13" text-anchor="middle" fill="#7a1d12">RUM</text></svg>
+<svg width="512" height="512" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" ><defs><linearGradient id="br13" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5a2a0c"/><stop offset=".45" stop-color="#d08a48"/><stop offset=".6" stop-color="#b06a2a"/><stop offset="1" stop-color="#4a220a"/></linearGradient>
+      <linearGradient id="br13h" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#4a5266"/><stop offset=".45" stop-color="#d3dae6"/><stop offset="1" stop-color="#3a4256"/></linearGradient></defs>
+      <ellipse cx="50" cy="92" rx="30" ry="4.5" fill="#000" opacity=".32"/>
+      <g class="a-wobble">
+      <path d="M24 12 q26 -7 52 0 q9 38 0 76 q-26 7 -52 0 q-9 -38 0 -76z" fill="url(#br13)" stroke="#2a1405" stroke-width="2.5"/>
+      <path d="M37 10 q-6 40 0 80 M50 9 v82 M63 10 q6 40 0 80" stroke="#3b1a06" stroke-width="1.4" opacity=".55" fill="none"/>
+      <ellipse cx="50" cy="12" rx="26" ry="5" fill="#8a4a1c" stroke="#2a1405" stroke-width="2"/><ellipse cx="50" cy="12" rx="18" ry="3" fill="#5a2a0c"/>
+      <path d="M20 28 q30 -7 60 0" stroke="url(#br13h)" stroke-width="6" fill="none"/><path d="M18 72 q32 7 64 0" stroke="url(#br13h)" stroke-width="6" fill="none"/>
+      <path d="M20 28 q30 -7 60 0 M18 72 q32 7 64 0" stroke="#22262f" stroke-width="1.2" fill="none"/>
+      <ellipse cx="50" cy="50" rx="14" ry="11" fill="#f3e2b5" stroke="#7a5a26" stroke-width="2"/>
+      <text x="50" y="55" font-family="Lilita One, sans-serif" font-size="13" text-anchor="middle" fill="#7a1d12">RUM</text>
+      <rect x="44" y="76" width="12" height="7" rx="2" fill="#7a4a00" stroke="#2a1405" stroke-width="1.5"/>
+      <path class="a-shine" d="M30 20 q-4 30 0 60" stroke="#ffd6a8" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".5"/>
+      </g>
+      <path class="a-drip" opacity="0" d="M50 84 q-3 5 0 8 q3 -3 0 -8z" fill="#ff9f1c"/></svg>
